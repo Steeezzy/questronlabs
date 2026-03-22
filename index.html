@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qestron Labs — Autonomous AI Company</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    /* Page-specific overrides or small tweaks if needed */
+    .hero { min-height: 100vh; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav id="navbar">
+    <a href="index.html" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+    <ul class="nav-links">
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#compare">Vs Traditional</a></li>
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#mirofish">MiroFish</a></li>
+      <li><a href="#api">API</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <a href="dashboard.html" class="nav-cta">Launch Dashboard →</a>
+    <button class="mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow-2"></div>
+    
+    <div class="hero-badge">
+      <div class="dot"></div>
+      <span>Powered by 1,000+ Autonomous Agents via MiroFish</span>
+    </div>
+    
+    <h1>
+      We Didn't Hire Better.<br>
+      <span class="gradient-text">We Built Better.</span>
+    </h1>
+    
+    <div class="hero-tagline">The World's First 100% Autonomous AI IT Company.</div>
+    
+    <p class="hero-sub">
+      Qestron Labs fully replaces Infosys, UST, TCS, and Wipro. From requirement analysis to deployment, our AI workforce delivers enterprise software in hours, not months.
+    </p>
+    
+    <div class="hero-ctas">
+      <a href="dashboard.html" class="btn-primary">Start a Project <span style="font-size:1.1rem">→</span></a>
+      <a href="#how" class="btn-outline">See the 8-Stage Process</a>
+    </div>
+    
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="1024">0</span>+</div>
+        <div class="stat-label">AI Agents</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="98">0</span>%</div>
+        <div class="stat-label">Cost Reduction</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="10">0</span>x</div>
+        <div class="stat-label">Faster Delivery</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$<span style="display:inline">0.05</span></div>
+        <div class="stat-label">Starting Price</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- COMPARISON -->
+  <section id="compare" class="reveal">
+    <div class="section-label">The Disruption</div>
+    <h2 class="section-title">Traditional IT vs Qestron Labs</h2>
+    <p class="section-sub">We don't just optimize software development. We completely replace the traditional system with zero human overhead.</p>
+    
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>METRIC</th>
+            <th>TRADITIONAL (TCS/INFOSYS)</th>
+            <th>QESTRON LABS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Time to MVP</td>
+            <td><span class="bad">3 - 6 Months</span></td>
+            <td><span class="good">2 - 4 Hours</span></td>
+          </tr>
+          <tr>
+            <td>Average Project Cost</td>
+            <td><span class="bad">$50,000 - $100,000+</span></td>
+            <td><span class="good">$50 - $500</span></td>
+          </tr>
+          <tr>
+            <td>Team Size</td>
+            <td><span class="bad">10 - 15 Humans</span></td>
+            <td><span class="good">0 Humans (200+ Agents)</span></td>
+          </tr>
+          <tr>
+            <td>Availability</td>
+            <td><span class="bad">9/5 (Excludes Weekends)</span></td>
+            <td><span class="good">24/7/365</span></td>
+          </tr>
+          <tr>
+            <td>Bug Fix Cycle</td>
+            <td><span class="bad">Days (Slack/Jira overhead)</span></td>
+            <td><span class="good">Seconds (Instant loops)</span></td>
+          </tr>
+          <tr>
+            <td>Knowledge Transfer</td>
+            <td><span class="bad">High risk (People leave)</span></td>
+            <td><span class="good">Immutable (ZEP Memory)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="compare-verdict">
+        Verdict: Qestron Labs is <strong>~99.5% cheaper</strong> and <strong>~100x faster</strong> than hiring a traditional IT team.
+      </div>
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- 8-STAGE PROCESS -->
+  <section id="how" class="reveal">
+    <div class="section-label">The Pipeline</div>
+    <h2 class="section-title">8 Stages of Autonomous Delivery</h2>
+    <p class="section-sub">From the first client call to the final deployment, here is how 1,000+ AI agents collaborate in parallel.</p>
+    
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      
+      <!-- Stage 1 -->
+      <div class="timeline-item">
+        <div class="timeline-dot active">📞</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 01</div>
+          <h3 class="timeline-title">Sales & Pre-Sales</h3>
+          <p class="timeline-desc">Sales Agent calls the client (via Qestron voice AI), understands requirements, sends a proposal with cost/timeline, and captures digital signature.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">Sales Agent</span>
+            <span class="timeline-agent-chip">Communication Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">🧠</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 02</div>
+          <h3 class="timeline-title">Requirement Analysis</h3>
+          <p class="timeline-desc">Business Analyst Agent creates a detailed BRD. Solution Architect designs the architecture. CTO Agent approves the tech stack.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">BA Agent</span>
+            <span class="timeline-agent-chip">Architect Agent</span>
+            <span class="timeline-agent-chip">CTO Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">📋</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 03</div>
+          <h3 class="timeline-title">Project Kickoff</h3>
+          <p class="timeline-desc">CEO Agent scopes the project. PM Agent creates a full sprint plan, assigns tasks to developer agents, and sets absolute milestones.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">CEO Agent</span>
+            <span class="timeline-agent-chip">PM Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">🎨</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 04</div>
+          <h3 class="timeline-title">Design & Mockups</h3>
+          <p class="timeline-desc">UI/UX Agent creates wireframes. Client Communication Agent shares designs with client via chat/call for instant feedback and approval.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">UI/UX Agent</span>
+            <span class="timeline-agent-chip">Comm Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">💻</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 05</div>
+          <h3 class="timeline-title">Parallel Development</h3>
+          <p class="timeline-desc">Frontend/Backend/Mobile agents build core files. Integration Agent connects third-party APIs. Database Agent handles schemas.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">Frontend Agent</span>
+            <span class="timeline-agent-chip">Backend Agent</span>
+            <span class="timeline-agent-chip">DB Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 6 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">🧪</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 06</div>
+          <h3 class="timeline-title">Testing & QA</h3>
+          <p class="timeline-desc">Unit Test Agent runs test suites. Bug Hunter Agent stresses the system. Code Review Agent verifies quality and security before merges.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">QA Agent</span>
+            <span class="timeline-agent-chip">Bug Hunter</span>
+            <span class="timeline-agent-chip">Reviewer Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 7 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">🚀</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 07</div>
+          <h3 class="timeline-title">Automated Deployment</h3>
+          <p class="timeline-desc">DevOps Agent configures CI/CD. Cloud Agent provisions infrastructure on AWS/Vercel. Monitoring Agent sets up uptime guards.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">DevOps Agent</span>
+            <span class="timeline-agent-chip">Cloud Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 8 -->
+      <div class="timeline-item">
+        <div class="timeline-dot">✅</div>
+        <div class="timeline-content">
+          <div class="timeline-num">STAGE 08</div>
+          <h3 class="timeline-title">Delivery & Support</h3>
+          <p class="timeline-desc">Communication Agent calls looking to demo. Support Agent logs any updates. Billing Agent triggers the invoice via Stripe.</p>
+          <div class="timeline-agents">
+            <span class="timeline-agent-chip">Comm Agent</span>
+            <span class="timeline-agent-chip">Support Agent</span>
+            <span class="timeline-agent-chip">Billing Agent</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- AGENT GRID -->
+  <section id="agents" class="reveal">
+    <div class="section-label">The Workforce</div>
+    <h2 class="section-title">20 Specialized Core Agents</h2>
+    <p class="section-sub">Each agent is purpose-built, powered by optimal reasoning models, and works 24/7 without breaks.</p>
+    
+    <div class="agents-grid">
+      <!-- C-Suite -->
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-csuite">C-Suite</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">CEO Agent</div>
+        <div class="agent-model">Claude Opus 4.6</div>
+        <div class="agent-desc">Understands client vision, scopes projects, and makes strategic design decisions.</div>
+        <div class="agent-task-live">Scoping "Fintech Dashboard"</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-csuite">C-Suite</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">CTO Agent</div>
+        <div class="agent-model">Claude Sonnet 4.6</div>
+        <div class="agent-desc">Picks the tech stack, designs overall architecture, and approves tech specs.</div>
+        <div class="agent-task-live">Optimizing microservices grid</div>
+      </div>
+
+      <!-- Developers -->
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-dev">Developer</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">Frontend Agent</div>
+        <div class="agent-model">Qwen3 Coder (Free)</div>
+        <div class="agent-desc">Builds React, Next.js, and beautiful UI/UX views with modern aesthetics.</div>
+        <div class="agent-task-live">Generating Dashboard.tsx</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-dev">Developer</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">Backend Agent</div>
+        <div class="agent-model">Qwen3 Coder (Free)</div>
+        <div class="agent-desc">Handles APIs, security, and authentication setups correctly and safely.</div>
+        <div class="agent-task-live">Testing JWT validation</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-design">Design</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">UI/UX Agent</div>
+        <div class="agent-model">Claude Sonnet 4.6</div>
+        <div class="agent-desc">Generates modern layout tokens, responsive guides, and asset designs.</div>
+        <div class="agent-task-live">Refining dark mode variables</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-qa">QA</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">Code Review Agent</div>
+        <div class="agent-model">Claude Opus 4.6</div>
+        <div class="agent-desc">Reviews code quality to ensure adherence to standards and safety items.</div>
+        <div class="agent-task-live">Linting Backend Service</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-devops">DevOps</span>
+          <div class="agent-status-dot dot-idle"></div>
+        </div>
+        <div class="agent-name">Cloud Agent</div>
+        <div class="agent-model">Claude Sonnet 4.6</div>
+        <div class="agent-desc">Manages AWS/Vercel scaling and configures load distribution layers.</div>
+        <div class="agent-task-live">Idle — waiting for build</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-tag tag-client">Client</span>
+          <div class="agent-status-dot dot-active"></div>
+        </div>
+        <div class="agent-name">Communication Agent</div>
+        <div class="agent-model">Qestron + Sarvam AI</div>
+        <div class="agent-desc">Handles calls and client questions in 22+ local Indian languages.</div>
+        <div class="agent-task-live">Calling "Dr. Ramesh"</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- MIROFISH ENGINE -->
+  <section id="mirofish" class="reveal">
+    <div class="section-label">The AI Grid</div>
+    <h2 class="section-title">MiroFish Powers the Simulation.</h2>
+    <p class="section-sub">Where normal AI thinks in terms of prompts, Qestron thinks in terms of societies. 10,000 agents simulate the project life-cycle.</p>
+    
+    <div class="miro-box">
+      <div>
+        <div class="miro-count">10,000+</div>
+        <div class="miro-label">Simulated Interactions Per Second</div>
+        <ul class="miro-features">
+          <li>Each simulated agent has a unique profile and memory layer.</li>
+          <li>Agents debate solutions in virtual branches before saving files.</li>
+          <li>We predict outcomes accurately before writing single lines of code.</li>
+          <li>Powered fully by ZEP contextual vectors for extreme-length memory.</li>
+        </ul>
+      </div>
+      <div class="miro-visual">
+        <div class="miro-orb orb1"></div>
+        <div class="miro-orb orb2"></div>
+        <div class="miro-orb orb3"></div>
+        <div class="miro-orb orb4"></div>
+        <div class="miro-center-ring"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- API SECTION -->
+  <section id="api" class="reveal">
+    <div class="section-label">REST API</div>
+    <h2 class="section-title">Integrate the Workforce.</h2>
+    <p class="section-sub">Trigger full autonomous sprints, create bots, or launch support chains via clean HTTP requests.</p>
+    
+    <div class="api-grid">
+      <div>
+        <div class="api-card" style="margin-bottom: 1rem;">
+          <div><span class="api-method method-post">POST</span><span class="api-endpoint">/v1/project</span></div>
+          <p class="api-desc">Submit requirements. Qestron triggers a full simulated sprint execution.</p>
+          <div class="api-price">$0.10 Per Sourced Run</div>
+        </div>
+        <div class="api-card" style="margin-bottom: 1rem;">
+          <div><span class="api-method method-post">POST</span><span class="api-endpoint">/v1/chat</span></div>
+          <p class="api-desc">Feed conversation logs back down to agent clusters instantly safely.</p>
+          <div class="api-price">$0.001 Per Prompt</div>
+        </div>
+        <div class="api-card">
+          <div><span class="api-method method-get">GET</span><span class="api-endpoint">/v1/status/:id</span></div>
+          <p class="api-desc">Recovers live workspace branches, agent streams, or build updates lists.</p>
+          <div class="api-price">Free tier active</div>
+        </div>
+      </div>
+      
+      <div class="code-block">
+        <div class="lang-tab">python</div>
+<span class="c-comment"># Trigger Autonomous Project Build</span>
+<span class="c-keyword">import</span> requests
+
+response = requests.<span class="c-func">post</span>(
+  <span class="c-str">"https://api.qestronlabs.com/v1/project"</span>,
+  headers={<span class="c-str">"Authorization"</span>: <span class="c-str">"Bearer SK_LIVE"</span>},
+  json={
+    <span class="c-str">"title"</span>: <span class="c-str">"Clinic Booking Platform"</span>,
+    <span class="c-str">"desc"</span>: <span class="c-str">"Patient UI + Auth + AWS Deploy"</span>,
+    <span class="c-str">"agent_count"</span>: <span class="c-const">250</span>
+  }
+)
+
+data = response.<span class="c-func">json</span>()
+<span class="c-func">print</span>(f<span class="c-str">"Project Live ID: {data['id']}"</span>)
+<span class="c-comment"># Output: Project Live ID: ql_20x9df</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-divider"></section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="reveal">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Pay for Output, Not Hours.</h2>
+    <p class="section-sub">No fixed contracts. No monthly setups. Pure modular pricing via automated Stripe billing.</p>
+    
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <p class="pricing-desc">For indie hackers and prototyping tests.</p>
+        <div class="pricing-price">Free<span> / 500 calls</span></div>
+        <ul class="pricing-features">
+          <li>500 Simulated Runs per month</li>
+          <li>Qwen Coder 3 Standard Agents</li>
+          <li>Standard Support tickets</li>
+          <li>Community Slack setups</li>
+        </ul>
+        <button class="pricing-btn outline">Get Token</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-badge">Highly Scaleable</div>
+        <div class="pricing-name">Growth Clusters</div>
+        <p class="pricing-desc">For funded startups and scaling speed teams.</p>
+        <div class="pricing-price">$49<span> / month</span></div>
+        <ul class="pricing-features">
+          <li>50,000 Autonomous Calls setup</li>
+          <li>Access to Claude Sonnet workflows</li>
+          <li>Full MiroFish dashboard features</li>
+          <li>Private git bridge integrations</li>
+          <li>Dedicated agent instances</li>
+        </ul>
+        <button class="pricing-btn primary">Start Sprint</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise Sync</div>
+        <p class="pricing-desc">For massive platforms and corporate grids.</p>
+        <div class="pricing-price">Custom</div>
+        <ul class="pricing-features">
+          <li>Unlimited concurrent agent tasks</li>
+          <li>Claude Opus Tier C-Suite loops</li>
+          <li>Strict SLA setups (99.99%)</li>
+          <li>On-premise grid setups</li>
+          <li>White-label dashboards</li>
+        </ul>
+        <button class="pricing-btn outline">Sync with Sales</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+        <p>Providing the engine that powers autonomous software factories safely 24/7/365.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="#how">How it works</a>
+        <a href="#compare">Comparison</a>
+        <a href="#agents">Agents</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
+      <div class="footer-col">
+        <h4>APIs</h4>
+        <a href="#api">Trigger Sprints</a>
+        <a href="#api">Communication</a>
+        <a href="#api">Status Pulls</a>
+        <a href="#">Knowledge Base</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of Use</a>
+        <a href="#">Privacy Agreement</a>
+        <a href="#">Security audits</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Qestron Labs. All rights reserved safely.</div>
+      <div class="footer-socials">
+        <a href="#">GitHub</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Continuous Navbar Color Shifters */
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (window.scrollY > 40) { nav.classList.add('scrolled'); } 
+      else { nav.classList.remove('scrolled'); }
+    });
+
+    /* Basic Reveal Actions on Scroll */
+    const revealers = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.1 });
+    revealers.forEach(r => observer.observe(r));
+
+    /* Simple Counters logic for Hero numbers view */
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      const target = +counter.getAttribute('data-target');
+      const increment = target / 100;
+      const updateCount = () => {
+        const count = +counter.innerText;
+        if (count < target) {
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(updateCount, 15);
+        } else { counter.innerText = target; }
+      }
+      observer.observe(counter);
+      /* Trigger manually for hero view instantly */
+      updateCount();
+    });
+
+    function toggleMobileNav() {
+      const links = document.querySelector('.nav-links');
+      links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+
+</body>
+</html>

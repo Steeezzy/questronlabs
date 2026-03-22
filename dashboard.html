@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Qestron Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    /* Dashboard specific tweaks if any */
+    body { background: #06060c; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav id="navbar" class="scrolled">
+    <a href="index.html" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="project.html">Current project</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+    <a href="project.html" class="nav-cta">View Active Build <span style="font-size:1.1rem">→</span></a>
+    <button class="mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <div class="dash-layout">
+    
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title">Workspace Overview</h1>
+        <p class="dash-sub">Welcome back, Karthik. 4 core agents are currently simulating operations.</p>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="project.html" class="btn-outline" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;">View Project</a>
+        <button class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;" onclick="createNewProject()">+ Launch Sprint</button>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="dash-metrics">
+      <div class="metric">
+        <div class="metric-icon">🚀</div>
+        <div class="metric-label">Active Projects</div>
+        <div class="metric-val">3</div>
+        <div class="metric-change">↑ 2 streams this week</div>
+      </div>
+      <div class="metric">
+        <div class="metric-icon">⚡</div>
+        <div class="metric-label">API Calls Today</div>
+        <div class="metric-val">1,247</div>
+        <div class="metric-change">↑ 18% vs yesterday</div>
+      </div>
+      <div class="metric">
+        <div class="metric-icon">🤖</div>
+        <div class="metric-label">Agents Running</div>
+        <div class="metric-val">4</div>
+        <div class="metric-change">Of 20 core workforce</div>
+      </div>
+      <div class="metric">
+        <div class="metric-icon">💰</div>
+        <div class="metric-label">Revenue Saved</div>
+        <div class="metric-val">$1.2k</div>
+        <div class="metric-change">Compared to standard IT</div>
+      </div>
+    </div>
+
+    <!-- LIVE PIPELINE -->
+    <div class="dash-card" style="margin-bottom: 1.5rem;">
+      <div class="dash-card-title">
+        <span>Live 8-Stage Project Pipeline</span>
+        <span style="font-size: 0.75rem; color: var(--accent2); font-weight: 500;">Project: Clinic Booking App (ql_20x9df)</span>
+      </div>
+      
+      <div class="pipeline">
+        <div class="pipeline-stage done">
+          <div class="stage-num">01</div>
+          <div class="stage-name">Sales</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">02</div>
+          <div class="stage-name">Analysis</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">03</div>
+          <div class="stage-name">Kickoff</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">04</div>
+          <div class="stage-name">Design</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage active">
+          <div class="stage-num">05</div>
+          <div class="stage-name">Development</div>
+          <div class="stage-bar"><div class="stage-fill" style="width: 65%"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">06</div>
+          <div class="stage-name">QA Testing</div>
+          <div class="stage-bar"><div class="stage-fill" style="width: 0%"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">07</div>
+          <div class="stage-name">DevOps</div>
+          <div class="stage-bar"><div class="stage-fill" style="width: 0%"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">08</div>
+          <div class="stage-name">Delivery</div>
+          <div class="stage-bar"><div class="stage-fill" style="width: 0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID: PROJECTS & AGENT ACTIVITY -->
+    <div class="dash-grid">
+      
+      <!-- ACTIVE PROJECTS -->
+      <div class="dash-card">
+        <div class="dash-card-title">Current Projects</div>
+        
+        <div style="display: grid; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;">
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem;">Clinic Booking Platform</div>
+              <div style="font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem;">Dr. Ramesh · React + FastAPI setup</div>
+            </div>
+            <span style="font-size: 0.72rem; padding: 0.25rem 0.6rem; background: rgba(108,99,255,0.12); color: var(--accent-light); border-radius: 4px;">In Dev</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;">
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem;">Restaurant AI Chatbot</div>
+              <div style="font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem;">Spice Garden · Multilingual sync</div>
+            </div>
+            <span style="font-size: 0.72rem; padding: 0.25rem 0.6rem; background: rgba(255,198,60,0.12); color: var(--accent4); border-radius: 4px;">Reviewing</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;">
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem;">E-Commerce SaaS</div>
+              <div style="font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem;">StyleKart · Postgres setup</div>
+            </div>
+            <span style="font-size: 0.72rem; padding: 0.25rem 0.6rem; background: rgba(0,212,170,0.12); color: var(--accent2); border-radius: 4px;">Delivered</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <div class="dash-card-title">Billing Usage Chart</div>
+          <div class="chart-placeholder">
+            <div class="chart-bar" style="height: 30%"><div class="chart-bar-label">Mon</div></div>
+            <div class="chart-bar" style="height: 45%"><div class="chart-bar-label">Tue</div></div>
+            <div class="chart-bar" style="height: 25%"><div class="chart-bar-label">Wed</div></div>
+            <div class="chart-bar" style="height: 60%"><div class="chart-bar-label">Thu</div></div>
+            <div class="chart-bar" style="height: 85%"><div class="chart-bar-label">Fri</div></div>
+            <div class="chart-bar" style="height: 40%"><div class="chart-bar-label">Sat</div></div>
+            <div class="chart-bar" style="height: 15%"><div class="chart-bar-label">Sun</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENT ACTIVITY FEED -->
+      <div class="dash-card">
+        <div class="dash-card-title">Core Agent Stream</div>
+        
+        <div class="activity-feed">
+          <div class="activity-item">
+            <div class="activity-time">14:55:02</div>
+            <div class="activity-dot dot-active"></div>
+            <div class="activity-text"><strong>Frontend Agent</strong> pushed `Dashboard.tsx` view setup to live branch.</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:54:40</div>
+            <div class="activity-dot dot-active"></div>
+            <div class="activity-text"><strong>Backend Agent</strong> testing full JWT validation chain locally.</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:54:12</div>
+            <div class="activity-dot dot-active"></div>
+            <div class="activity-text"><strong>Communication Agent</strong> completed call with Dr. Ramesh. Updates synced to architecture doc.</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:53:50</div>
+            <div class="activity-dot" style="background:var(--accent3)"></div>
+            <div class="activity-text"><strong>Reviewer Agent</strong> rejected PR #12 in `backend_service`. Reason: Lint errors found.</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:53:11</div>
+            <div class="activity-dot dot-active"></div>
+            <div class="activity-text"><strong>QA Agent</strong> triggering automated visual regression suite on views.</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-time">14:52:45</div>
+            <div class="activity-dot dot-idle"></div>
+            <div class="activity-text"><strong>Cloud Agent</strong> waiting on DevOps branch merges to trigger Vercel scaling operations.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- API KEYS -->
+    <div class="dash-card" style="margin-top: 1.5rem;">
+      <div class="dash-card-title">Production API Configuration</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.2rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
+        <div>
+          <div style="font-size: 0.85rem; font-weight: 600;">Standard Live Token</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text2); margin-top: 0.2rem;">ql_live_20x9df87s63hdkj8h723f9a</div>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+          <button class="btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;" onclick="alert('Key Copied to Clipboard!')">Copy</button>
+          <button class="btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.8rem; color: var(--accent3); border-color: rgba(255,107,107,0.3);">Regenerate</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function createNewProject() {
+      alert("Launching autonomous creation pipeline... Agents triggering in 3 seconds.");
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Plans — Qestron Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    /* Specific tweaks */
+    body { background: #080814; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav id="navbar" class="scrolled">
+    <a href="index.html" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="project.html">Current Project</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="pricing.html" class="active">Pricing</a></li>
+    </ul>
+    <a href="dashboard.html" class="nav-cta">Dashboard</a>
+    <button class="mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <!-- PRICING HEADER -->
+  <section style="text-align: center; padding-top: 8rem; padding-bottom: 2rem;">
+    <div class="hero-badge">No Fixed Retainers</div>
+    <h1 style="font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 1rem;">
+      <span class="gradient-text">Pay for Output.</span> Not Hours.
+    </h1>
+    <p style="color: var(--text2); max-width: 500px; margin: 0 auto 3rem; font-size: 1rem; line-height: 1.6;">
+      No monthly seats. No per-developer pricing. Just clean, scalable, usage-based triggers via Stripe.
+    </p>
+  </section>
+
+  <!-- CARDS (Reusing Global CSS) -->
+  <section style="padding-top: 0; max-width: 1100px;">
+    <div class="pricing-grid">
+      
+      <div class="pricing-card">
+        <div class="pricing-name">Starter Cluster</div>
+        <p class="pricing-desc">For developers & small prototyping tests.</p>
+        <div class="pricing-price">Free<span> / 500 triggers</span></div>
+        <ul class="pricing-features">
+          <li>500 Simulated Runs / Month</li>
+          <li>Qwen Coder Standard Agents</li>
+          <li>Standard Slack setups</li>
+          <li>Public Git bridges only</li>
+        </ul>
+        <button class="pricing-btn outline" style="margin-top: 1rem;">Get Token</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-badge">Highly Scaleable</div>
+        <div class="pricing-name">Growth Streams</div>
+        <p class="pricing-desc">For funded startups & scaling speed teams.</p>
+        <div class="pricing-price">$49<span> / month</span></div>
+        <ul class="pricing-features">
+          <li>50,000 Autonomous Calls setup</li>
+          <li>Access to Claude Sonnet loops</li>
+          <li>Full MiroFish dashboards stream</li>
+          <li>Private git bridge integrations</li>
+          <li>Dedicated agent buffers</li>
+        </ul>
+        <button class="pricing-btn primary" style="margin-top: 1rem;">Launch Sprint</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise Grid</div>
+        <p class="pricing-desc">For massive platforms & corporate setups syncs.</p>
+        <div class="pricing-price">Custom</div>
+        <ul class="pricing-features">
+          <li>Unlimited concurrent agent tasks</li>
+          <li>Claude Opus Tier C-Suite loops</li>
+          <li>Strict SLA setups (99.99%)</li>
+          <li>On-premise grid setups sync</li>
+          <li>White-label dashboard tools</li>
+        </ul>
+        <button class="pricing-btn outline" style="margin-top: 1rem;">Sync Sales</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMPARISON HIGHLIGHTS -->
+  <section style="padding-top: 0;">
+    <div class="compare-table-wrap" style="background: rgba(255,107,107,0.02); border-color: rgba(255,107,107,0.15); max-width: 800px; margin: 0 auto;">
+      <div style="padding: 1.5rem; text-align: center; border-bottom: 1px solid rgba(255,107,107,0.15);">
+        <span style="color: var(--accent3); font-weight: 700; font-family: 'Syne', sans-serif; font-size: 0.9rem;">VS TRADITIONAL IT (INFOSYS/WIPRO)</span>
+      </div>
+      <table class="compare-table">
+        <tbody>
+          <tr>
+            <td>Average Developer Hourly Rate</td>
+            <td><span class="bad">$25 - $40 / hour</span></td>
+            <td><span class="good">$0.00 / hour</span></td>
+          </tr>
+          <tr>
+            <td>Overtime / Weekend Multipliers</td>
+            <td><span class="bad">1.5x - 2.0x Surcharges</span></td>
+            <td><span class="good">0.0x (Flat usage)</span></td>
+          </tr>
+          <tr>
+            <td>Project Manager Overhead</td>
+            <td><span class="bad">Included (Adds 20% Cost)</span></td>
+            <td><span class="good">0% (PM Agent Free)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="compare-verdict" style="border-color: rgba(255,107,107,0.15); background: rgba(255,107,107,0.03); color: var(--text);">
+        Hiring a 5-person traditional team for 3 months triggers costs upwards of <strong>$45,000+</strong>. Qestron triggers the equivalent file structure setup for <strong><$500 total</strong>.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="margin-top: 4rem;">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+        <p>Providing the engine that powers autonomous software factories safely 24/7/365.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="docs.html">Docs</a>
+        <a href="pricing.html">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>APIs</h4>
+        <a href="docs.html#projects">Trigger Sprints</a>
+        <a href="docs.html#chat">Communication</a>
+        <a href="docs.html#status">Status Pulls</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of Use</a>
+        <a href="#">Privacy Agreement</a>
+        <a href="#">Security audits</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Qestron Labs. All rights reserved safely.</div>
+      <div class="footer-socials">
+        <a href="#">GitHub</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation — Qestron Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    /* Specific tweaks */
+    body { background: #070712; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav id="navbar" class="scrolled">
+    <a href="index.html" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="project.html">Current Project</a></li>
+      <li><a href="docs.html" class="active">Docs</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+    <a href="dashboard.html" class="nav-cta">Dashboard</a>
+    <button class="mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <div class="docs-layout">
+    <!-- SIDEBAR -->
+    <aside class="docs-sidebar">
+      <h3>GETTING STARTED</h3>
+      <ul class="docs-nav">
+        <li><a href="#intro" class="active">Introduction</a></li>
+        <li><a href="#auth">Authentication</a></li>
+        <li><a href="#headers">Global Headers</a></li>
+      </ul>
+      <h3 style="margin-top: 2rem;">RESOURCES</h3>
+      <ul class="docs-nav">
+        <li><a href="#projects">Autonomous Projects</a></li>
+        <li><a href="#chat">Communication Logs</a></li>
+        <li><a href="#call">AI Voice Calls</a></li>
+        <li><a href="#status">Sync Queries</a></li>
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="docs-main">
+      <section id="intro" style="padding: 0; max-width: 800px;">
+        <h2>API Introduction</h2>
+        <p>Welcome to the Qestron Labs Developer Documentation. Our REST API allows you to trigger full autonomous software sprints, connect into our agent chatstreams, or provision continuous background builds securely with simple HTTP endpoints.</p>
+        
+        <p>All response objects return clean structured application handles safely for client consumption correctly. Standard JSON responses provided consistently.</p>
+      </section>
+
+      <section id="auth" style="padding: 0; margin-top: 3rem; max-width: 800px;">
+        <h2>Authentication</h2>
+        <p>Authenticate requests by passing your live token inside the standard header setup properly safely.</p>
+        
+        <div class="code-block" style="margin-top: 1rem;">
+          <code>Authorization: Bearer YOUR_SK_LIVE_KEY</code>
+        </div>
+      </section>
+
+      <section id="projects" style="padding: 0; margin-top: 3rem; max-width: 800px;">
+        <h2>Autonomous Projects Sprints</h2>
+        <p>The main trigger to spin up fully parallel simulated work environments instantly.</p>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="api-method method-post">POST</span>
+            <span class="endpoint-title">/v1/project</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom: 1rem;">Trigger a parallel AI society model run for building complete code setups correctly.</p>
+
+            <div class="tab-group" id="tabs-proj">
+              <button class="tab-btn active" onclick="switchTab('proj', 'json')">Body params</button>
+              <button class="tab-btn" onclick="switchTab('proj', 'py')">Python</button>
+              <button class="tab-btn" onclick="switchTab('proj', 'node')">Node.js</button>
+            </div>
+
+            <div id="proj-json" class="tab-content">
+              <table class="param-table">
+                <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td>title</td><td>string</td><td>Full name of Sprint build target structure</td></tr>
+                  <tr><td>desc</td><td>string</td><td>Scope details regarding setup features needed</td></tr>
+                  <tr><td>agents</td><td>integer</td><td>Quantity of simulate triggers (Max 10,000)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="proj-py" class="tab-content" style="display: none;">
+              <div class="code-block" style="background:transparent; border:none; padding:0;">
+                <span class="c-keyword">import</span> requests<br>
+                response = requests.<span class="c-func">post</span>(<br>
+                &nbsp;&nbsp;<span class="c-str">"https://api.qestronlabs.com/v1/project"</span>,<br>
+                &nbsp;&nbsp;json={<span class="c-str">"title"</span>: <span class="c-str">"Web Build"</span>, <span class="c-str">"agents"</span>: <span class="c-const">500</span>}<br>
+                )
+              </div>
+            </div>
+
+            <div id="proj-node" class="tab-content" style="display: none;">
+              <div class="code-block" style="background:transparent; border:none; padding:0;">
+                <span class="c-keyword">const</span> axios = <span class="c-func">require</span>(<span class="c-str">'axios'</span>);<br>
+                axios.<span class="c-func">post</span>(<span class="c-str">'/v1/project'</span>, { <span class="c-const">title</span>: <span class="c-str">'Web Build'</span> });
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section id="chat" style="padding: 0; margin-top: 3rem; max-width: 800px;">
+        <h2>Agent Chat Syncs</h2>
+        
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="api-method method-post">POST</span>
+            <span class="endpoint-title">/v1/chat</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom: 1rem;">Sync prompts down securely setup. Multilingual Sarvam AI triggers enabled automatically.</p>
+            <div class="code-block">
+              { <span class="c-keyword">"prompt"</span>: <span class="c-str">"How do I scale servers safely?"</span>, <span class="c-keyword">"lang"</span>: <span class="c-str">"hi-IN"</span> }
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(section, target) {
+      const parent = document.getElementById('tabs-' + section);
+      parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const card = parent.closest('.endpoint-body');
+      card.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+      document.getElementById(section + '-' + target).style.display = 'block';
+    }
+
+    /* Small sidebar active logic while scrolling */
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('.docs-main section');
+        const navitems = document.querySelectorAll('.docs-nav li a');
+        sections.forEach((sec, i) => {
+            const top = sec.offsetTop - 100;
+            if (window.scrollY >= top) {
+                navitems.forEach(n => n.classList.remove('active'));
+                if (navitems[i]) navitems[i].classList.add('active');
+            }
+        });
+    });
+  </script>
+
+</body>
+</html>

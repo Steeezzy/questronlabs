@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Detail — Qestron Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav id="navbar" class="scrolled">
+    <a href="index.html" class="logo">Qestron<span>Labs</span><div class="logo-dot"></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="project.html" class="active">Current Project</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+    <a href="dashboard.html" class="nav-cta">Back to Dashboard</a>
+    <button class="mobile-toggle" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <div class="dash-layout">
+    
+    <!-- PROJECT HEADER -->
+    <div class="project-header">
+      <div>
+        <div style="font-size: 0.75rem; color: var(--accent2); font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Active Sprint: ql_20x9df</div>
+        <h1 class="project-title">Clinic Booking Platform</h1>
+        <p class="project-meta">Client: Dr. Ramesh Clinic • Tech Stack: React + FastAPI + Postgres</p>
+      </div>
+      
+      <div class="countdown-box">
+        <div class="countdown-label">Estimated Delivery</div>
+        <div class="countdown-time">02:14:35</div>
+        <div class="countdown-unit">Hours : Minutes : Seconds</div>
+      </div>
+    </div>
+
+    <!-- LIVE PIPELINE (Same as dash for sync feeling) -->
+    <div class="dash-card" style="margin-bottom: 1.5rem;">
+      <div class="dash-card-title">Stage Progress</div>
+      
+      <div class="pipeline">
+        <div class="pipeline-stage done">
+          <div class="stage-num">01</div>
+          <div class="stage-name">Sales</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">02</div>
+          <div class="stage-name">Analysis</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">03</div>
+          <div class="stage-name">Kickoff</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage done">
+          <div class="stage-num">04</div>
+          <div class="stage-name">Design</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage active" style="flex: 1.5">
+          <div class="stage-num">05</div>
+          <div class="stage-name">Parallel Development</div>
+          <div class="stage-bar"><div class="stage-fill" style="width: 65%"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">06</div>
+          <div class="stage-name">QA Testing</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">07</div>
+          <div class="stage-name">DevOps</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="stage-num">08</div>
+          <div class="stage-name">Delivery</div>
+          <div class="stage-bar"><div class="stage-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID: LOGS & DOCUMENTS -->
+    <div class="dash-grid">
+      
+      <!-- LIVE AGENT STREAM -->
+      <div class="dash-card">
+        <div class="dash-card-title">Live Agent Terminal Stream</div>
+        
+        <div class="log-feed" id="log-feed">
+          <div class="log-entry"><span class="log-time">14:55:12</span> <span class="log-agent">[Frontend]</span> <span class="log-msg">Generated `components/BookingCalendar.tsx` view grid structure.</span></div>
+          <div class="log-entry"><span class="log-time">14:55:08</span> <span class="log-agent">[Backend]</span> <span class="log-msg">Secured endpoint POST `/api/v1/auth/validate` with valid checks.</span></div>
+          <div class="log-entry"><span class="log-time">14:54:55</span> <span class="log-agent">[System]</span> <span class="log-msg">Pull request #14 opened by Frontend Agent into `dev_cycle` stream.</span></div>
+          <div class="log-entry"><span class="log-time">14:54:40</span> <span class="log-agent">[Reviewer]</span> <span class="log-msg">Analyzing PR #14 locally... No lint or safety issues found yet.</span></div>
+          <div class="log-entry"><span class="log-time">14:54:22</span> <span class="log-agent">[DB]</span> <span class="log-msg">Created schema migration: `002_add_appointments_table.sql`</span></div>
+          <div class="log-entry"><span class="log-time">14:54:10</span> <span class="log-agent">[Comm]</span> <span class="log-msg">Successfully synced requirements from call into system architecture config.</span></div>
+          <div class="log-entry"><span class="log-time">14:53:52</span> <span class="log-agent">[BA]</span> <span class="log-msg">BRD Document finalized. Freezing requirement inputs locked correctly.</span></div>
+          <div class="log-entry"><span class="log-time">14:53:35</span> <span class="log-agent">[PM]</span> <span class="log-msg">Sprint schedule adjusted. Development stage declared ACTIVE safely.</span></div>
+        </div>
+      </div>
+
+      <!-- AGENTS WORKING & DOCUMENTS -->
+      <div style="display: grid; gap: 1.5rem;">
+        
+        <!-- AGENT CARDS IN FRAME -->
+        <div class="dash-card">
+          <div class="dash-card-title">Currently Active Agents (4)</div>
+          <div style="display: grid; gap: 0.75rem;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="agent-status-dot dot-active"></div>
+                <div>
+                  <div style="font-weight: 600; font-size: 0.85rem;">Frontend Dev Agent</div>
+                  <div style="font-size: 0.72rem; color: var(--text2);">Building booking UI views.</div>
+                </div>
+              </div>
+              <div style="font-weight: 500; font-size: 0.75rem; color: var(--accent2);">Active</div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="agent-status-dot dot-active"></div>
+                <div>
+                  <div style="font-weight: 600; font-size: 0.85rem;">Backend Dev Agent</div>
+                  <div style="font-size: 0.72rem; color: var(--text2);">Writing appointments API setup.</div>
+                </div>
+              </div>
+              <div style="font-weight: 500; font-size: 0.75rem; color: var(--accent2);">Active</div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="agent-status-dot dot-idle"></div>
+                <div>
+                  <div style="font-weight: 600; font-size: 0.85rem;">Reviewer Agent</div>
+                  <div style="font-size: 0.72rem; color: var(--text2);">Idle — waiting for pull requests.</div>
+                </div>
+              </div>
+              <div style="font-weight: 500; font-size: 0.75rem; color: var(--text3);">Idle</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- GENERATED DOCUMENTS -->
+        <div class="dash-card">
+          <div class="dash-card-title">Generated Artifacts</div>
+          <div class="doc-list">
+            <div class="doc-item">
+              <div class="doc-info">
+                <div class="doc-icon">📄</div>
+                <div><div class="doc-name">BusinessReqDoc.pdf</div><div class="doc-size">124 KB • BA Agent</div></div>
+              </div>
+              <button class="btn-outline" style="font-size: 0.7rem; padding: 0.4rem 0.6rem;">Pull</button>
+            </div>
+
+            <div class="doc-item">
+              <div class="doc-info">
+                <div class="doc-icon">🗺️</div>
+                <div><div class="doc-name">ArchitectureDiag.png</div><div class="doc-size">1.2 MB • Architect</div></div>
+              </div>
+              <button class="btn-outline" style="font-size: 0.7rem; padding: 0.4rem 0.6rem;">Pull</button>
+            </div>
+
+            <div class="doc-item">
+              <div class="doc-info">
+                <div class="doc-icon">🛠️</div>
+                <div><div class="doc-name">SprintPlan.json</div><div class="doc-size">12 KB • PM Agent</div></div>
+              </div>
+              <button class="btn-outline" style="font-size: 0.7rem; padding: 0.4rem 0.6rem;">Pull</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    /* Simulated Live Stream Feed updater scroll setups */
+    const feed = document.getElementById('log-feed');
+    const streamItems = [
+      "Secured API keys inside backend configurations.",
+      "Vercel serverless functions deployed to edge grid.",
+      "Database connected with safely parameterized queries.",
+      "Pull request #15 merged safely into validation loops."
+    ];
+    let index = 0;
+    
+    setInterval(() => {
+        const entry = document.createElement('div');
+        entry.className = "log-entry";
+        const now = new Date();
+        const timestr = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        entry.innerHTML = `<span class="log-time">${timestr}</span> <span class="log-agent">[Sim]</span> <span class="log-msg">${streamItems[index % streamItems.length]}</span>`;
+        feed.prepend(entry);
+        index++;
+    }, 4000);
+  </script>
+
+</body>
+</html>
