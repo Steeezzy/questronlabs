@@ -578,11 +578,11 @@
         
         
         <div class="nav-menu">
-            <a class="nav-link active" href="dashboard.html">
+            <a class="nav-link " href="dashboard.html">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 Overview
             </a>
-            <a class="nav-link " href="simulate.html">
+            <a class="nav-link active" href="simulate.html">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Simulation Engine
             </a>
@@ -605,42 +605,229 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- View: Overview -->
-        <div id="view-overview" >
+        <!-- View: Simulate -->
+        <div id="view-simulate" >
             <div class="page-header">
                 <div>
-                    <h1 class="gradient-text">System Overview</h1>
-                    <p style="color:var(--text-secondary); margin-top: 8px;">Real-time metrics from the MiroFish intelligence core.</p>
+                    <h1>Simulation Engine</h1>
+                    <p style="color:var(--text-secondary); margin-top: 8px;">Configure and initialize the 1000-agent swarm for any IT delivery project</p>
                 </div>
-                <button class="btn-outline" onclick="refreshData()">Sync Data</button>
-            </div>
-            
-            <div class="grid-cards">
-                <div class="glass-panel stat-card">
-                    <h3>Active Deployments</h3>
-                    <div class="value gradient-text" id="stat-projects">-</div>
-                </div>
-                <div class="glass-panel stat-card">
-                    <h3>Compute Workforce</h3>
-                    <div class="value">1000<span style="font-size:1.5rem; color:var(--text-tertiary)">/1000</span></div>
-                </div>
-                <div class="glass-panel stat-card">
-                    <h3>Core Health</h3>
-                    <div class="value" style="color:var(--brand-accent)">Optimal</div>
+                <div>
+                    <button class="btn-outline" onclick="loadTemplate('saas')" style="margin-right:10px;">Load Template</button>
+                    <button class="btn-outline" onclick="clearForm()">Clear</button>
                 </div>
             </div>
             
-            <div class="glass-panel content-box">
-                <h2>Intelligence Core Logs</h2>
-                <div class="terminal-output">> [SYS] Initialization verified on port 5001.
-> [CORE] 855 static compute nodes bound to primary routing.
-> [ALLOC] Flexible padding engine initialized with 145 reserve nodes.
-> [API] WebSocket bridges established. Awaiting client payloads.
-> ...</div>
+            <!-- SECTION 1 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">1</div>
+                <div><div class="section-title">Client & Project Basics</div><div class="section-sub">Core project identification and client details</div></div>
+                <div class="section-badge badge-required">Required</div>
+              </div>
+              <div class="form-grid three">
+                <div class="field"><label>Client Name <span class="req">*</span></label><input type="text" id="clientName" placeholder="e.g. Global Bank Corp"></div>
+                <div class="field"><label>Contact Person</label><input type="text" id="contactPerson" placeholder="e.g. Ravi Menon, CTO"></div>
+                <div class="field"><label>Industry Vertical <span class="req">*</span></label>
+                  <select id="industry">
+                    <option value="">Select industry...</option>
+                    <option>Banking & Finance</option>
+                    <option>Healthcare & Pharma</option>
+                    <option>Retail & Ecommerce</option>
+                    <option>Manufacturing & IoT</option>
+                    <option>Government & Public Sector</option>
+                    <option>Telecom & Media</option>
+                    <option>Logistics & Supply Chain</option>
+                    <option>Education & EdTech</option>
+                    <option>Real Estate & PropTech</option>
+                    <option>SaaS / Tech Startup</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-grid three">
+                <div class="field"><label>Project Name <span class="req">*</span></label><input type="text" id="projectName" placeholder="e.g. CoreBanking Modernization 2026"></div>
+                <div class="field"><label>Priority Level</label>
+                  <select id="priority">
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical — All agents on standby</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div class="field"><label>Expected Delivery</label>
+                  <select id="delivery">
+                    <option>As fast as possible</option>
+                    <option>Within 2 hours</option>
+                    <option>Within 24 hours</option>
+                    <option>Within 1 week</option>
+                    <option>Custom timeline</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-grid full">
+                <div class="field"><label>Project Description <span class="req">*</span></label>
+                  <textarea id="projectDesc" rows="4" placeholder="Describe exactly what the client needs. Be specific — the AI agents will use this to allocate themselves and decide architecture, tech stack, and delivery plan."></textarea>
+                </div>
+              </div>
             </div>
+
+            <!-- SECTION 2 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">2</div>
+                <div><div class="section-title">Service Layer Selection</div><div class="section-sub">Which Qestron Labs service layers does this project need?</div></div>
+                <div class="section-badge badge-required">Required</div>
+              </div>
+              <div class="check-grid" id="serviceGrid">
+                <label class="check-item selected" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="app_dev" checked><div><div class="check-label">Application Development</div><div class="check-sub">Web, mobile, backend</div></div></label>
+                <label class="check-item selected" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="cloud_infra" checked><div><div class="check-label">Cloud Infrastructure</div><div class="check-sub">AWS, Azure, GCP setup</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="data_ai"><div><div class="check-label">Data & AI / LLMs</div><div class="check-sub">Pipelines, RAG, agents</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="cybersecurity"><div><div class="check-label">Cybersecurity</div><div class="check-sub">IAM, pentest, zero trust</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="legacy_mod"><div><div class="check-label">Legacy Modernization</div><div class="check-sub">COBOL → Python/Go</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="bpm"><div><div class="check-label">BPM / Outsourcing</div><div class="check-sub">Finance, HR, supply chain</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="iot"><div><div class="check-label">IoT & Edge Computing</div><div class="check-sub">Sensors, factories</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="saas_impl"><div><div class="check-label">SaaS Implementation</div><div class="check-sub">Salesforce, SAP, ServiceNow</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="devops"><div><div class="check-label">DevOps & CI/CD</div><div class="check-sub">Pipelines, deployment</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this);updateAgentPreview()"><input type="checkbox" value="qa"><div><div class="check-label">QA & Testing</div><div class="check-sub">Unit, E2E, load, security</div></div></label>
+              </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">3</div>
+                <div><div class="section-title">Tech Stack Preferences</div><div class="section-sub">Let agents know your preferred technologies (or leave to CTO Agent to decide)</div></div>
+                <div class="section-badge badge-optional">Optional</div>
+              </div>
+              <div class="form-grid">
+                <div class="field"><label>Frontend</label><select id="frontend"><option value="auto">Let CTO Agent decide</option><option>React + Next.js</option><option>Vue.js + Nuxt</option><option>Angular</option><option>React Native (Mobile)</option><option>Flutter</option><option>No frontend needed</option></select></div>
+                <div class="field"><label>Backend</label><select id="backend"><option value="auto">Let CTO Agent decide</option><option>Python + FastAPI</option><option>Node.js + Express</option><option>Java + Spring Boot</option><option>Go</option><option>Ruby on Rails</option><option>.NET Core</option></select></div>
+              </div>
+              <div class="form-grid three">
+                <div class="field"><label>Database</label><select id="database"><option value="auto">Let CTO Agent decide</option><option>PostgreSQL</option><option>MySQL</option><option>MongoDB</option><option>Redis + PostgreSQL</option><option>Supabase</option><option>Firebase</option></select></div>
+                <div class="field"><label>Cloud Provider</label><select id="cloud"><option value="auto">Let DevOps Agent decide</option><option>AWS</option><option>Google Cloud</option><option>Azure</option><option>Multi-cloud (AWS + GCP)</option><option>Vercel + Railway</option></select></div>
+                <div class="field"><label>AI / LLM Model</label><select id="llmChoice"><option value="auto">Auto-assign per agent role</option><option>Claude Opus (all agents)</option><option>Claude Sonnet (all agents)</option><option>Qwen3-Coder (coding only)</option><option>Mixed: Opus+Sonnet+Qwen</option></select></div>
+              </div>
+              <div class="field">
+                <label>Additional Tech Requirements</label>
+                <div class="tag-row" id="techTags">
+                  <span class="tag-pill" onclick="toggleTag(this)">Stripe Payments</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Twilio SMS/Calls</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Sarvam AI (Indian languages)</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Kafka Streaming</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Docker + Kubernetes</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">GraphQL API</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">WebSockets (Real-time)</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">OAuth2 / SSO</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Multi-tenant SaaS</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">Razorpay</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">WhatsApp API</span>
+                  <span class="tag-pill" onclick="toggleTag(this)">OpenAI Integration</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">4</div>
+                <div><div class="section-title">Compliance & Security Requirements</div><div class="section-sub">Security agents will audit and enforce these standards</div></div>
+                <div class="section-badge badge-optional">Optional</div>
+              </div>
+              <div class="compliance-grid">
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="gdpr"><div><div class="check-label">GDPR</div><div class="check-sub">EU data privacy</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="hipaa"><div><div class="check-label">HIPAA</div><div class="check-sub">Healthcare</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="pci_dss"><div><div class="check-label">PCI-DSS</div><div class="check-sub">Payment security</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="soc2"><div><div class="check-label">SOC 2</div><div class="check-sub">Trust & security</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="iso27001"><div><div class="check-label">ISO 27001</div><div class="check-sub">Info security</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="owasp"><div><div class="check-label">OWASP Top 10</div><div class="check-sub">Web security</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="zero_trust"><div><div class="check-label">Zero Trust</div><div class="check-sub">Network</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="rbi"><div><div class="check-label">RBI Guidelines</div><div class="check-sub">Indian banking</div></div></label>
+              </div>
+            </div>
+
+            <!-- SECTION 5 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">5</div>
+                <div><div class="section-title">Agent Swarm Configuration</div><div class="section-sub">Fine-tune how the 1000 agents are distributed across this project</div></div>
+                <div class="section-badge badge-auto">Auto</div>
+              </div>
+              <div class="agent-preview">
+                <div class="ap-title">Live Agent Allocation Preview</div>
+                <div class="ap-bars" id="agentBars"></div>
+              </div>
+              <div class="form-grid three">
+                <div class="field"><label>Simulation Mode</label>
+                  <select id="simMode"><option value="it_company">Standard IT Delivery</option><option value="rapid">Rapid Prototype (2hrs)</option><option value="enterprise">Enterprise Grade</option><option value="legacy">Legacy Modernization</option><option value="security">Security-First Delivery</option></select>
+                </div>
+                <div class="field"><label>Quality vs Speed</label>
+                  <select id="qualityMode"><option value="balanced">Balanced</option><option value="quality">Max Quality (slower)</option><option value="speed">Max Speed (faster)</option></select>
+                </div>
+                <div class="field"><label>Total Agents</label>
+                  <select id="agentCount" onchange="updateAgentPreview()"><option value="1000">1000 (Full Swarm)</option><option value="500">500 (Half Swarm)</option><option value="200">200 (Lean Team)</option><option value="50">50 (Prototype)</option></select>
+                </div>
+              </div>
+              <div class="priority-grid">
+                <div class="priority-item">
+                  <div class="priority-label">Development Focus</div>
+                  <div class="priority-val" id="devFocusVal">60%</div>
+                  <input type="range" min="20" max="80" value="60" oninput="document.getElementById('devFocusVal').textContent=this.value+'%';updateAgentPreview()">
+                </div>
+                <div class="priority-item">
+                  <div class="priority-label">QA & Security Focus</div>
+                  <div class="priority-val" id="qaFocusVal">25%</div>
+                  <input type="range" min="10" max="60" value="25" oninput="document.getElementById('qaFocusVal').textContent=this.value+'%';updateAgentPreview()">
+                </div>
+                <div class="priority-item">
+                  <div class="priority-label">DevOps Focus</div>
+                  <div class="priority-val" id="devopsFocusVal">15%</div>
+                  <input type="range" min="5" max="40" value="15" oninput="document.getElementById('devopsFocusVal').textContent=this.value+'%';updateAgentPreview()">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 6 -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-num">6</div>
+                <div><div class="section-title">Expected Deliverables</div><div class="section-sub">What documents and outputs should agents produce?</div></div>
+                <div class="section-badge badge-optional">Optional</div>
+              </div>
+              <div class="check-grid">
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="brd" checked><div><div class="check-label">BRD Document</div></div></label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="architecture" checked><div><div class="check-label">System Architecture</div></div></label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="code" checked><div><div class="check-label">Working Code</div></div></label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="test_report" checked><div><div class="check-label">Test Report</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="api_docs"><div><div class="check-label">API Documentation</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="deployment_config"><div><div class="check-label">Deployment Config</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="security_report"><div><div class="check-label">Security Audit Report</div></div></label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="user_manual"><div><div class="check-label">User Manual</div></div></label>
+              </div>
+            </div>
+
+            <!-- RUN BAR -->
+            <div class="run-bar">
+              <button class="run-btn" id="runBtn" onclick="runSimulate()">
+                ⚡ Initialize 1000-Agent Swarm
+              </button>
+              <div class="run-status" id="runStatus">Fill in sections above and click to initialize the swarm.</div>
+            </div>
+
+            <!-- OUTPUT -->
+            <div class="section-card" id="sim-output-box" >
+              <div class="section-header">
+                <div class="section-num">✓</div>
+                <div><div class="section-title">Simulation Output</div><div class="section-sub">Raw MiroFish agent response</div></div>
+                <div class="section-badge badge-auto">Live</div>
+              </div>
+              <div class="output-panel visible" id="sim-terminal"></div>
+            </div>
+            
+            <div id="agent-allocation" ></div> <!-- Keep placeholder for existing logic backwards compatibility -->
+
         </div>
 
-        
 
     </main>
 
@@ -764,10 +951,74 @@
         }
         
         // Ensure preview is generated when page loads
-        
+        document.addEventListener('DOMContentLoaded', updateAgentPreview);
         
         // --- OVERRIDE runSimulate to use the form blocks ---
-        
+        async function runSimulate() {
+            const clientName   = document.getElementById('clientName').value;
+            const projectDesc  = document.getElementById('projectDesc').value;
+            const industry     = document.getElementById('industry').value;
+            const simMode      = document.getElementById('simMode').value;
+            const agentCount   = document.getElementById('agentCount').value;
+
+            if (!clientName || !projectDesc || !industry) {
+                alert('Please fill in Client Name, Industry, and Project Description at minimum.');
+                return;
+            }
+
+            const btn = document.getElementById("runBtn");
+            const box = document.getElementById("sim-output-box");
+            const term = document.getElementById("sim-terminal");
+            const status = document.getElementById('runStatus');
+            
+            btn.textContent = "Booting Agent Cluster...";
+            btn.disabled = true;
+            status.textContent = `Initializing agents for ${clientName}...`;
+            
+            box.style.display = "block";
+            term.innerHTML = `<span class="out-comment">// Connecting to MiroFish simulation engine (port 5001)...</span>\n<span class="out-comment">// Allocating swarm topologies...</span>\n`;
+
+            try {
+                // Post to our proper API back-end
+                const res = await fetch(`${API_BASE}/admin/simulate`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-admin-key": ADMIN_KEY
+                    },
+                    body: JSON.stringify({ input: projectDesc, mode: simMode }) // using projectDesc as main input
+                });
+
+                const data = await res.json();
+                
+                term.innerHTML += `<span class="out-comment">// ✅ TOPOLOGY RECEIVED. STREAMING RESULTS:</span>\n\n`;
+                
+                let html = `<span class="out-comment">// Client: ${clientName} | Agents allocated out of 1000 pool</span>\n\n`;
+                if(data.output) {
+                    for(const [key, msg] of Object.entries(data.output)) {
+                        const isCsuite = key.includes("CEO") || key.includes("CTO") || key.includes("PM") || key.includes("Manager");
+                        const isDev = key.includes("Developer") || key.includes("Engineer");
+                        const cls = isCsuite ? 'out-ceo' : (key.includes("QA") ? 'out-qa' : (key.includes("DevOps") ? "out-devops" : "out-dev"));
+                        // Escape HTML in the output message to prevent XSS/breaking layout
+                        const safeMsg = msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        html += `<span class="${cls}">${key.padEnd(25, ' ')}</span> <span class="out-comment">→</span> ${safeMsg}\n`;
+                    }
+                } else {
+                    html += JSON.stringify(data, null, 2);
+                }
+                
+                term.innerHTML += html;
+                status.textContent = `✅ Simulation complete — Architecture pipeline resolved successfully.`;
+
+            } catch(e) {
+                term.innerHTML += "\n<span class=\"out-qa\">[CRITICAL FAULT] Connection failed: " + e.message + "</span>";
+                status.textContent = "Fatal exception occurred.";
+            } finally {
+                btn.textContent = "⚡ Initialize 1000-Agent Swarm";
+                btn.disabled = false;
+                refreshData(); 
+            }
+        }
 </script>
 </body>
 </html>
