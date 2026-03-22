@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Qestron Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+  body { font-family: 'DM Sans', sans-serif; background: #080810; color: #f0f0ff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .login-card { max-width: 400px; width: 90%; background: rgba(20,20,31,0.5); border: 1px solid rgba(255,107,107,0.2); border-radius: 16px; padding: 2.5rem; backdrop-filter: blur(10px); text-align: center; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .logo span { color: #ff6b6b; }
+  .subtitle { color: #9090b0; font-size: 0.88rem; margin-bottom: 2rem; }
+  .form-group { margin-bottom: 1.25rem; text-align: left; }
+  .form-group label { display: block; font-size: 0.78rem; color: #9090b0; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+  .form-group input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem; color: #fff; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
+  .form-group input:focus { border-color: #ff6b6b; }
+  .login-btn { width: 100%; padding: 0.85rem; border-radius: 8px; background: #ff6b6b; color: white; border: none; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+  .login-btn:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="logo">Qestron<span>Admin</span></div>
+  <p class="subtitle">Secure Internal Dashboard Access</p>
+  
+  <form onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label>Access Password</label>
+      <input type="password" id="adminPass" placeholder="••••••••" required>
+    </div>
+    
+    <button type="submit" class="login-btn">Secure Login 🔐</button>
+  </form>
+</div>
+
+<script>
+  function handleLogin(event) {
+    event.preventDefault();
+    const pass = document.getElementById("adminPass").value;
+    if (pass === "admin123") {
+      localStorage.setItem("admin_auth", "true");
+      window.location.href = "dashboard.html";
+    } else {
+      alert("Invalid password! Access denied.");
+    }
+  }
+</script>
+
+</body>
+</html>
