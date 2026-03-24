@@ -13,10 +13,10 @@ from dataclasses import dataclass, field
 
 class TaskStatus(str, Enum):
     """任务状态枚举"""
-    PENDING = "pending"          # 等待中
-    PROCESSING = "processing"    # 处理中
-    COMPLETED = "completed"      # 已完成
-    FAILED = "failed"            # 失败
+    PENDING = "pending"          # 
+    PROCESSING = "processing"    # 
+    COMPLETED = "completed"      # 
+    FAILED = "failed"            # 
 
 
 @dataclass
@@ -27,12 +27,12 @@ class Task:
     status: TaskStatus
     created_at: datetime
     updated_at: datetime
-    progress: int = 0              # 总进度百分比 0-100
-    message: str = ""              # 状态消息
-    result: Optional[Dict] = None  # 任务结果
-    error: Optional[str] = None    # 错误信息
-    metadata: Dict = field(default_factory=dict)  # 额外元数据
-    progress_detail: Dict = field(default_factory=dict)  # 详细进度信息
+    progress: int = 0              #  0-100
+    message: str = ""              # 
+    result: Optional[Dict] = None  # 
+    error: Optional[str] = None    # 
+    metadata: Dict = field(default_factory=dict)  # 
+    progress_detail: Dict = field(default_factory=dict)  # 
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典"""

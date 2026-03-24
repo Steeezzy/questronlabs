@@ -24,9 +24,9 @@ logger = get_logger('mirofish.simulation_ipc')
 
 class CommandType(str, Enum):
     """命令类型"""
-    INTERVIEW = "interview"           # 单个Agent采访
-    BATCH_INTERVIEW = "batch_interview"  # 批量采访
-    CLOSE_ENV = "close_env"           # 关闭环境
+    INTERVIEW = "interview"           # Agent
+    BATCH_INTERVIEW = "batch_interview"  # 
+    CLOSE_ENV = "close_env"           # Closing environment
 
 
 class CommandStatus(str, Enum):
@@ -110,7 +110,7 @@ class SimulationIPCClient:
         self.commands_dir = os.path.join(simulation_dir, "ipc_commands")
         self.responses_dir = os.path.join(simulation_dir, "ipc_responses")
         
-        # 确保目录存在
+        # Ensure directory exists
         os.makedirs(self.commands_dir, exist_ok=True)
         os.makedirs(self.responses_dir, exist_ok=True)
     
@@ -143,14 +143,14 @@ class SimulationIPCClient:
             args=args
         )
         
-        # 写入命令文件
+        # 
         command_file = os.path.join(self.commands_dir, f"{command_id}.json")
         with open(command_file, 'w', encoding='utf-8') as f:
             json.dump(command.to_dict(), f, ensure_ascii=False, indent=2)
         
         logger.info(f"发送IPC命令: {command_type.value}, command_id={command_id}")
         
-        # 等待响应
+        # 
         response_file = os.path.join(self.responses_dir, f"{command_id}.json")
         start_time = time.time()
         
@@ -161,24 +161,24 @@ class SimulationIPCClient:
                         response_data = json.load(f)
                     response = IPCResponse.from_dict(response_data)
                     
-                    # 清理命令和响应文件
+                    # 
                     try:
                         os.remove(command_file)
                         os.remove(response_file)
                     except OSError:
                         pass
                     
-                    logger.info(f"收到IPC响应: command_id={command_id}, status={response.status.value}")
+                    logger.info(f"ReceivedIPC响应: command_id={command_id}, status={response.status.value}")
                     return response
                 except (json.JSONDecodeError, KeyError) as e:
                     logger.warning(f"解析响应失败: {e}")
             
             time.sleep(poll_interval)
         
-        # 超时
+        # 
         logger.error(f"等待IPC响应超时: command_id={command_id}")
         
-        # 清理命令文件
+        # 
         try:
             os.remove(command_file)
         except OSError:
@@ -253,7 +253,7 @@ class SimulationIPCClient:
     
     def send_close_env(self, timeout: float = 30.0) -> IPCResponse:
         """
-        发送关闭环境命令
+        发送Closing environment命令
         
         Args:
             timeout: 超时时间
@@ -303,11 +303,11 @@ class SimulationIPCServer:
         self.commands_dir = os.path.join(simulation_dir, "ipc_commands")
         self.responses_dir = os.path.join(simulation_dir, "ipc_responses")
         
-        # 确保目录存在
+        # Ensure directory exists
         os.makedirs(self.commands_dir, exist_ok=True)
         os.makedirs(self.responses_dir, exist_ok=True)
         
-        # 环境状态
+        # 
         self._running = False
     
     def start(self):
@@ -339,7 +339,7 @@ class SimulationIPCServer:
         if not os.path.exists(self.commands_dir):
             return None
         
-        # 按时间排序获取命令文件
+        # 
         command_files = []
         for filename in os.listdir(self.commands_dir):
             if filename.endswith('.json'):
@@ -370,7 +370,7 @@ class SimulationIPCServer:
         with open(response_file, 'w', encoding='utf-8') as f:
             json.dump(response.to_dict(), f, ensure_ascii=False, indent=2)
         
-        # 删除命令文件
+        # 
         command_file = os.path.join(self.commands_dir, f"{response.command_id}.json")
         try:
             os.remove(command_file)

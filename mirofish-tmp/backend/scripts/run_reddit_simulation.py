@@ -3,14 +3,14 @@ OASIS Reddit模拟预设脚本
 此脚本读取配置文件中的参数来执行模拟，实现全程自动化
 
 功能特性:
-- 完成模拟后不立即关闭环境，进入等待命令模式
+- 完成模拟后不立即Closing environment，进入等待命令模式
 - 支持通过IPC接收Interview命令
 - 支持单个Agent采访和批量采访
-- 支持远程关闭环境命令
+- 支持远程Closing environment命令
 
 使用方式:
     python run_reddit_simulation.py --config /path/to/simulation_config.json
-    python run_reddit_simulation.py --config /path/to/simulation_config.json --no-wait  # 完成后立即关闭
+    python run_reddit_simulation.py --config /path/to/simulation_config.json --no-wait  # 
 """
 
 import argparse
@@ -25,18 +25,18 @@ import sqlite3
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
-# 全局变量：用于信号处理
+# 
 _shutdown_event = None
 _cleanup_done = False
 
-# 添加项目路径
+# Add project path
 _scripts_dir = os.path.dirname(os.path.abspath(__file__))
 _backend_dir = os.path.abspath(os.path.join(_scripts_dir, '..'))
 _project_root = os.path.abspath(os.path.join(_backend_dir, '..'))
 sys.path.insert(0, _scripts_dir)
 sys.path.insert(0, _backend_dir)
 
-# 加载项目根目录的 .env 文件（包含 LLM_API_KEY 等配置）
+#  .env  LLM_API_KEY 
 from dotenv import load_dotenv
 _env_file = os.path.join(_project_root, '.env')
 if os.path.exists(_env_file):
@@ -71,13 +71,13 @@ class MaxTokensWarningFilter(logging.Filter):
     """过滤掉 camel-ai 关于 max_tokens 的警告（我们故意不设置 max_tokens，让模型自行决定）"""
     
     def filter(self, record):
-        # 过滤掉包含 max_tokens 警告的日志
+        #  max_tokens 
         if "max_tokens" in record.getMessage() and "Invalid or missing" in record.getMessage():
             return False
         return True
 
 
-# 在模块加载时立即添加过滤器，确保在 camel 代码执行前生效
+#  camel 
 logging.getLogger().addFilter(MaxTokensWarningFilter())
 
 
@@ -85,7 +85,7 @@ def setup_oasis_logging(log_dir: str):
     """配置 OASIS 的日志，使用固定名称的日志文件"""
     os.makedirs(log_dir, exist_ok=True)
     
-    # 清理旧的日志文件
+    # 
     for f in os.listdir(log_dir):
         old_log = os.path.join(log_dir, f)
         if os.path.isfile(old_log) and f.endswith('.log'):
@@ -131,7 +131,7 @@ except ImportError as e:
     sys.exit(1)
 
 
-# IPC相关常量
+# IPC
 IPC_COMMANDS_DIR = "ipc_commands"
 IPC_RESPONSES_DIR = "ipc_responses"
 ENV_STATUS_FILE = "env_status.json"
@@ -155,7 +155,7 @@ class IPCHandler:
         self.status_file = os.path.join(simulation_dir, ENV_STATUS_FILE)
         self._running = True
         
-        # 确保目录存在
+        # Ensure directory exists
         os.makedirs(self.commands_dir, exist_ok=True)
         os.makedirs(self.responses_dir, exist_ok=True)
     
@@ -172,7 +172,7 @@ class IPCHandler:
         if not os.path.exists(self.commands_dir):
             return None
         
-        # 获取命令文件（按时间排序）
+        # 
         command_files = []
         for filename in os.listdir(self.commands_dir):
             if filename.endswith('.json'):
@@ -204,7 +204,7 @@ class IPCHandler:
         with open(response_file, 'w', encoding='utf-8') as f:
             json.dump(response, f, ensure_ascii=False, indent=2)
         
-        # 删除命令文件
+        # 
         command_file = os.path.join(self.commands_dir, f"{command_id}.json")
         try:
             os.remove(command_file)
@@ -219,20 +219,20 @@ class IPCHandler:
             True 表示成功，False 表示失败
         """
         try:
-            # 获取Agent
+            # Agent
             agent = self.agent_graph.get_agent(agent_id)
             
-            # 创建Interview动作
+            # Interview
             interview_action = ManualAction(
                 action_type=ActionType.INTERVIEW,
                 action_args={"prompt": prompt}
             )
             
-            # 执行Interview
+            # Interview
             actions = {agent: interview_action}
             await self.env.step(actions)
             
-            # 从数据库获取结果
+            # 
             result = self._get_interview_result(agent_id)
             
             self.send_response(command_id, "completed", result=result)
@@ -253,9 +253,9 @@ class IPCHandler:
             interviews: [{"agent_id": int, "prompt": str}, ...]
         """
         try:
-            # 构建动作字典
+            # 
             actions = {}
-            agent_prompts = {}  # 记录每个agent的prompt
+            agent_prompts = {}  # agentprompt
             
             for interview in interviews:
                 agent_id = interview.get("agent_id")
@@ -275,10 +275,10 @@ class IPCHandler:
                 self.send_response(command_id, "failed", error="没有有效的Agent")
                 return False
             
-            # 执行批量Interview
+            # Interview
             await self.env.step(actions)
             
-            # 获取所有结果
+            # 
             results = {}
             for agent_id in agent_prompts.keys():
                 result = self._get_interview_result(agent_id)
@@ -314,7 +314,7 @@ class IPCHandler:
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
             
-            # 查询最新的Interview记录
+            # Interview
             cursor.execute("""
                 SELECT user_id, info, created_at
                 FROM trace
@@ -355,7 +355,7 @@ class IPCHandler:
         command_type = command.get("command_type")
         args = command.get("args", {})
         
-        print(f"\n收到IPC命令: {command_type}, id={command_id}")
+        print(f"\nReceivedIPC命令: {command_type}, id={command_id}")
         
         if command_type == CommandType.INTERVIEW:
             await self.handle_interview(
@@ -373,7 +373,7 @@ class IPCHandler:
             return True
             
         elif command_type == CommandType.CLOSE_ENV:
-            print("收到关闭环境命令")
+            print("ReceivedClosing environment命令")
             self.send_response(command_id, "completed", result={"message": "环境即将关闭"})
             return False
         
@@ -385,7 +385,7 @@ class IPCHandler:
 class RedditSimulationRunner:
     """Reddit模拟运行器"""
     
-    # Reddit可用动作（不包含INTERVIEW，INTERVIEW只能通过ManualAction手动触发）
+    # RedditINTERVIEWINTERVIEWManualAction
     AVAILABLE_ACTIONS = [
         ActionType.LIKE_POST,
         ActionType.DISLIKE_POST,
@@ -407,7 +407,7 @@ class RedditSimulationRunner:
         初始化模拟运行器
         
         Args:
-            config_path: 配置文件路径 (simulation_config.json)
+            config_path: Config file path (simulation_config.json)
             wait_for_commands: 模拟完成后是否等待命令（默认True）
         """
         self.config_path = config_path
@@ -440,16 +440,16 @@ class RedditSimulationRunner:
         - LLM_BASE_URL: API基础URL
         - LLM_MODEL_NAME: 模型名称
         """
-        # 优先从 .env 读取配置
+        #  .env 
         llm_api_key = os.environ.get("LLM_API_KEY", "")
         llm_base_url = os.environ.get("LLM_BASE_URL", "")
         llm_model = os.environ.get("LLM_MODEL_NAME", "")
         
-        # 如果 .env 中没有，则使用 config 作为备用
+        #  .env  config 
         if not llm_model:
             llm_model = self.config.get("llm_model", "gpt-4o-mini")
         
-        # 设置 camel-ai 所需的环境变量
+        #  camel-ai 
         if llm_api_key:
             os.environ["OPENAI_API_KEY"] = llm_api_key
         
@@ -524,11 +524,11 @@ class RedditSimulationRunner:
         """运行Reddit模拟
         
         Args:
-            max_rounds: 最大模拟轮数（可选，用于截断过长的模拟）
+            max_rounds: Max simulation rounds(Optional, used to truncate long simulations)
         """
         print("=" * 60)
         print("OASIS Reddit模拟")
-        print(f"配置文件: {self.config_path}")
+        print(f"配置File: {self.config_path}")
         print(f"模拟ID: {self.config.get('simulation_id', 'unknown')}")
         print(f"等待命令模式: {'启用' if self.wait_for_commands else '禁用'}")
         print("=" * 60)
@@ -538,7 +538,7 @@ class RedditSimulationRunner:
         minutes_per_round = time_config.get("minutes_per_round", 30)
         total_rounds = (total_hours * 60) // minutes_per_round
         
-        # 如果指定了最大轮数，则截断
+        # 
         if max_rounds is not None and max_rounds > 0:
             original_rounds = total_rounds
             total_rounds = min(total_rounds, max_rounds)
@@ -578,17 +578,17 @@ class RedditSimulationRunner:
             agent_graph=self.agent_graph,
             platform=oasis.DefaultPlatformType.REDDIT,
             database_path=db_path,
-            semaphore=30,  # 限制最大并发 LLM 请求数，防止 API 过载
+            semaphore=30,  #  LLM  API 
         )
         
         await self.env.reset()
         print("环境初始化完成\n")
         
-        # 初始化IPC处理器
+        # IPC
         self.ipc_handler = IPCHandler(self.simulation_dir, self.env, self.agent_graph)
         self.ipc_handler.update_status("running")
         
-        # 执行初始事件
+        # 
         event_config = self.config.get("event_config", {})
         initial_posts = event_config.get("initial_posts", [])
         
@@ -619,7 +619,7 @@ class RedditSimulationRunner:
                 await self.env.step(initial_actions)
                 print(f"  已发布 {len(initial_actions)} 条初始帖子")
         
-        # 主模拟循环
+        # 
         print("\n开始模拟循环...")
         start_time = datetime.now()
         
@@ -655,7 +655,7 @@ class RedditSimulationRunner:
         print(f"  - 总耗时: {total_elapsed:.1f}秒")
         print(f"  - 数据库: {db_path}")
         
-        # 是否进入等待命令模式
+        # 
         if self.wait_for_commands:
             print("\n" + "=" * 60)
             print("进入等待命令模式 - 环境保持运行")
@@ -664,7 +664,7 @@ class RedditSimulationRunner:
             
             self.ipc_handler.update_status("alive")
             
-            # 等待命令循环（使用全局 _shutdown_event）
+            #  _shutdown_event
             try:
                 while not _shutdown_event.is_set():
                     should_continue = await self.ipc_handler.process_commands()
@@ -672,23 +672,23 @@ class RedditSimulationRunner:
                         break
                     try:
                         await asyncio.wait_for(_shutdown_event.wait(), timeout=0.5)
-                        break  # 收到退出信号
+                        break  # Received
                     except asyncio.TimeoutError:
                         pass
             except KeyboardInterrupt:
-                print("\n收到中断信号")
+                print("\nReceived中断信号")
             except asyncio.CancelledError:
                 print("\n任务被取消")
             except Exception as e:
-                print(f"\n命令处理出错: {e}")
+                print(f"\nCommand processing error: {e}")
             
-            print("\n关闭环境...")
+            print("\nClosing environment...")
         
-        # 关闭环境
+        # Closing environment
         self.ipc_handler.update_status("stopped")
         await self.env.close()
         
-        print("环境已关闭")
+        print("Environment closed")
         print("=" * 60)
 
 
@@ -698,32 +698,32 @@ async def main():
         '--config', 
         type=str, 
         required=True,
-        help='配置文件路径 (simulation_config.json)'
+        help='Config file path (simulation_config.json)'
     )
     parser.add_argument(
         '--max-rounds',
         type=int,
         default=None,
-        help='最大模拟轮数（可选，用于截断过长的模拟）'
+        help='Max simulation rounds(Optional, used to truncate long simulations)'
     )
     parser.add_argument(
         '--no-wait',
         action='store_true',
         default=False,
-        help='模拟完成后立即关闭环境，不进入等待命令模式'
+        help='模拟完成后立即Closing environment，不进入等待命令模式'
     )
     
     args = parser.parse_args()
     
-    # 在 main 函数开始时创建 shutdown 事件
+    # Create shutdown event at the start of main function
     global _shutdown_event
     _shutdown_event = asyncio.Event()
     
     if not os.path.exists(args.config):
-        print(f"错误: 配置文件不存在: {args.config}")
+        print(f"Error: Config file does not exist: {args.config}")
         sys.exit(1)
     
-    # 初始化日志配置（使用固定文件名，清理旧日志）
+    # Initialize log config (fixed filename, clear old logs)
     simulation_dir = os.path.dirname(args.config) or "."
     setup_oasis_logging(os.path.join(simulation_dir, "log"))
     
@@ -736,20 +736,20 @@ async def main():
 
 def setup_signal_handlers():
     """
-    设置信号处理器，确保收到 SIGTERM/SIGINT 时能够正确退出
-    让程序有机会正常清理资源（关闭数据库、环境等）
+    Set signal handlers for proper SIGINT/SIGTERM exits
+    Allow program to clean up resources cleanly
     """
     def signal_handler(signum, frame):
         global _cleanup_done
         sig_name = "SIGTERM" if signum == signal.SIGTERM else "SIGINT"
-        print(f"\n收到 {sig_name} 信号，正在退出...")
+        print(f"\nReceived {sig_name}  signal, exiting...")
         if not _cleanup_done:
             _cleanup_done = True
             if _shutdown_event:
                 _shutdown_event.set()
         else:
-            # 重复收到信号才强制退出
-            print("强制退出...")
+            # Received
+            print("Force exiting...")
             sys.exit(1)
     
     signal.signal(signal.SIGTERM, signal_handler)
@@ -761,9 +761,9 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\n程序被中断")
+        print("\nProgram interrupted")
     except SystemExit:
         pass
     finally:
-        print("模拟进程已退出")
+        print("Simulation process exited")
 

@@ -36,13 +36,13 @@ def main():
     # 创建应用
     app = create_app()
     
-    # 获取运行配置
+    # 
     host = os.environ.get('FLASK_HOST', '0.0.0.0')
-    port = int(os.environ.get('FLASK_PORT', 5001))
+    port = 5002
     debug = Config.DEBUG
     
     # 启动服务
-    app.run(host=host, port=port, debug=debug, threaded=True)
+    app.run(host=host, port=port, debug=debug, threaded=True, use_reloader=False)
 
 
 if __name__ == '__main__':

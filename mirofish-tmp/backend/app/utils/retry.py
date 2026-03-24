@@ -55,7 +55,7 @@ def retry_with_backoff(
                         logger.error(f"函数 {func.__name__} 在 {max_retries} 次重试后仍失败: {str(e)}")
                         raise
                     
-                    # 计算延迟
+                    # 
                     current_delay = min(delay, max_delay)
                     if jitter:
                         current_delay = current_delay * (0.5 + random.random())

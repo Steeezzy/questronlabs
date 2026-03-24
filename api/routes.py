@@ -129,6 +129,28 @@ async def run_mirofish_simulation(project_id: str, requirements: str):
         print(f"Failed to run MiroFish simulation for {project_id}: {e}")
 
 # ─────────────────────────────────────────────
+# LIVE BUILD LOGS STORAGE
+# ─────────────────────────────────────────────
+build_logs = []  # stores all agent actions
+
+@app.get("/api/admin/logs")
+async def get_logs(x_admin_key: str = Header(None)):
+    verify_admin(x_admin_key)
+    return {"logs": build_logs}
+
+@app.post("/api/admin/log")  
+async def add_log(entry: dict, x_admin_key: str = Header(None)):
+    verify_admin(x_admin_key)
+    build_logs.append({
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "agent": entry.get("agent"),
+        "action": entry.get("action"),
+        "layer": entry.get("layer"),
+        "file": entry.get("file"),
+    })
+    return {"ok": True}
+
+# ─────────────────────────────────────────────
 # ADMIN ROUTES (Internal Facing)
 # ─────────────────────────────────────────────
 def verify_admin(x_admin_key: str):
@@ -167,6 +189,22 @@ async def admin_simulate(request: Request, x_admin_key: str = Header(None)):
             return response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"MiroFish connection error: {str(e)}")
+
+@app.get("/api/admin/workspace-logs")
+async def get_workspace_logs(x_admin_key: str = Header(None)):
+    """Fetch live tail from workspace.log so dashboard can display standalone scripts running"""
+    verify_admin(x_admin_key)
+    log_path = "mirofish-tmp/backend/workspace.log"
+    if os.path.exists(log_path):
+        try:
+            with open(log_path, "r") as f:
+                content = f.read()
+                # Return last 50 lines to prevent overloading
+                lines = content.split("\n")[-50:]
+                return {"success": True, "logs": "\n".join(lines)}
+        except Exception as e:
+            return {"success": False, "message": f"Error reading log: {str(e)}"}
+    return {"success": False, "message": "No active workspace.log found"}
 
 if __name__ == "__main__":
     import uvicorn

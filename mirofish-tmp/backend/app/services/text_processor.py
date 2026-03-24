@@ -48,13 +48,13 @@ class TextProcessor:
         """
         import re
         
-        # 标准化换行
+        # 
         text = text.replace('\r\n', '\n').replace('\r', '\n')
         
-        # 移除连续空行（保留最多两个换行）
+        # 
         text = re.sub(r'\n{3,}', '\n\n', text)
         
-        # 移除行首行尾空白
+        # 
         lines = [line.strip() for line in text.split('\n')]
         text = '\n'.join(lines)
         

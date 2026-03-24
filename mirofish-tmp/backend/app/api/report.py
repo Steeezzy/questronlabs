@@ -19,7 +19,7 @@ from ..utils.logger import get_logger
 logger = get_logger('mirofish.api.report')
 
 
-# ============== 报告生成接口 ==============
+# ==============  ==============
 
 @report_bp.route('/generate', methods=['POST'])
 def generate_report():
@@ -58,7 +58,7 @@ def generate_report():
         
         force_regenerate = data.get('force_regenerate', False)
         
-        # 获取模拟信息
+        # 
         manager = SimulationManager()
         state = manager.get_simulation(simulation_id)
         
@@ -68,7 +68,7 @@ def generate_report():
                 "error": f"模拟不存在: {simulation_id}"
             }), 404
         
-        # 检查是否已有报告
+        # 
         if not force_regenerate:
             existing_report = ReportManager.get_report_by_simulation(simulation_id)
             if existing_report and existing_report.status == ReportStatus.COMPLETED:
@@ -83,7 +83,7 @@ def generate_report():
                     }
                 })
         
-        # 获取项目信息
+        # 
         project = ProjectManager.get_project(state.project_id)
         if not project:
             return jsonify({
@@ -105,11 +105,11 @@ def generate_report():
                 "error": "缺少模拟需求描述"
             }), 400
         
-        # 提前生成 report_id，以便立即返回给前端
+        #  report_id
         import uuid
         report_id = f"report_{uuid.uuid4().hex[:12]}"
         
-        # 创建异步任务
+        # 
         task_manager = TaskManager()
         task_id = task_manager.create_task(
             task_type="report_generate",
@@ -120,7 +120,7 @@ def generate_report():
             }
         )
         
-        # 定义后台任务
+        # 
         def run_generate():
             try:
                 task_manager.update_task(
@@ -130,14 +130,14 @@ def generate_report():
                     message="初始化Report Agent..."
                 )
                 
-                # 创建Report Agent
+                # Report Agent
                 agent = ReportAgent(
                     graph_id=graph_id,
                     simulation_id=simulation_id,
                     simulation_requirement=simulation_requirement
                 )
                 
-                # 进度回调
+                # 
                 def progress_callback(stage, progress, message):
                     task_manager.update_task(
                         task_id,
@@ -145,13 +145,13 @@ def generate_report():
                         message=f"[{stage}] {message}"
                     )
                 
-                # 生成报告（传入预先生成的 report_id）
+                #  report_id
                 report = agent.generate_report(
                     progress_callback=progress_callback,
                     report_id=report_id
                 )
                 
-                # 保存报告
+                # 
                 ReportManager.save_report(report)
                 
                 if report.status == ReportStatus.COMPLETED:
@@ -170,7 +170,7 @@ def generate_report():
                 logger.error(f"报告生成失败: {str(e)}")
                 task_manager.fail_task(task_id, str(e))
         
-        # 启动后台线程
+        # 
         thread = threading.Thread(target=run_generate, daemon=True)
         thread.start()
         
@@ -223,7 +223,7 @@ def get_generate_status():
         task_id = data.get('task_id')
         simulation_id = data.get('simulation_id')
         
-        # 如果提供了simulation_id，先检查是否已有完成的报告
+        # simulation_id
         if simulation_id:
             existing_report = ReportManager.get_report_by_simulation(simulation_id)
             if existing_report and existing_report.status == ReportStatus.COMPLETED:
@@ -267,7 +267,7 @@ def get_generate_status():
         }), 500
 
 
-# ============== 报告获取接口 ==============
+# ==============  ==============
 
 @report_bp.route('/<report_id>', methods=['GET'])
 def get_report(report_id: str):
@@ -409,7 +409,7 @@ def download_report(report_id: str):
         md_path = ReportManager._get_report_markdown_path(report_id)
         
         if not os.path.exists(md_path):
-            # 如果MD文件不存在，生成一个临时文件
+            # MD
             import tempfile
             with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
                 f.write(report.markdown_content)
@@ -462,7 +462,7 @@ def delete_report(report_id: str):
         }), 500
 
 
-# ============== Report Agent对话接口 ==============
+# ============== Report Agent ==============
 
 @report_bp.route('/chat', methods=['POST'])
 def chat_with_report_agent():
@@ -510,7 +510,7 @@ def chat_with_report_agent():
                 "error": "请提供 message"
             }), 400
         
-        # 获取模拟和项目信息
+        # 
         manager = SimulationManager()
         state = manager.get_simulation(simulation_id)
         
@@ -536,7 +536,7 @@ def chat_with_report_agent():
         
         simulation_requirement = project.simulation_requirement or ""
         
-        # 创建Agent并进行对话
+        # Agent
         agent = ReportAgent(
             graph_id=graph_id,
             simulation_id=simulation_id,
@@ -559,7 +559,7 @@ def chat_with_report_agent():
         }), 500
 
 
-# ============== 报告进度与分章节接口 ==============
+# ==============  ==============
 
 @report_bp.route('/<report_id>/progress', methods=['GET'])
 def get_report_progress(report_id: str):
@@ -618,7 +618,7 @@ def get_report_sections(report_id: str):
                     {
                         "filename": "section_01.md",
                         "section_index": 1,
-                        "content": "## 执行摘要\\n\\n..."
+                        "content": "## \\n\\n..."
                     },
                     ...
                 ],
@@ -630,7 +630,7 @@ def get_report_sections(report_id: str):
     try:
         sections = ReportManager.get_generated_sections(report_id)
         
-        # 获取报告状态
+        # 
         report = ReportManager.get_report(report_id)
         is_complete = report is not None and report.status == ReportStatus.COMPLETED
         
@@ -663,7 +663,7 @@ def get_single_section(report_id: str, section_index: int):
             "success": true,
             "data": {
                 "filename": "section_01.md",
-                "content": "## 执行摘要\\n\\n..."
+                "content": "## \\n\\n..."
             }
         }
     """
@@ -697,7 +697,7 @@ def get_single_section(report_id: str, section_index: int):
         }), 500
 
 
-# ============== 报告状态检查接口 ==============
+# ==============  ==============
 
 @report_bp.route('/check/<simulation_id>', methods=['GET'])
 def check_report_status(simulation_id: str):
@@ -725,7 +725,7 @@ def check_report_status(simulation_id: str):
         report_status = report.status.value if report else None
         report_id = report.report_id if report else None
         
-        # 只有报告完成后才解锁interview
+        # interview
         interview_unlocked = has_report and report.status == ReportStatus.COMPLETED
         
         return jsonify({
@@ -748,7 +748,7 @@ def check_report_status(simulation_id: str):
         }), 500
 
 
-# ============== Agent 日志接口 ==============
+# ============== Agent  ==============
 
 @report_bp.route('/<report_id>/agent-log', methods=['GET'])
 def get_agent_log(report_id: str):
@@ -843,7 +843,7 @@ def stream_agent_log(report_id: str):
         }), 500
 
 
-# ============== 控制台日志接口 ==============
+# ==============  ==============
 
 @report_bp.route('/<report_id>/console-log', methods=['GET'])
 def get_console_log(report_id: str):
@@ -925,7 +925,7 @@ def stream_console_log(report_id: str):
         }), 500
 
 
-# ============== 工具调用接口（供调试使用）==============
+# ============== ==============
 
 @report_bp.route('/tools/search', methods=['POST'])
 def search_graph_tool():

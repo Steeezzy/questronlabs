@@ -16,11 +16,11 @@ from ..config import Config
 
 class ProjectStatus(str, Enum):
     """项目状态"""
-    CREATED = "created"              # 刚创建，文件已上传
-    ONTOLOGY_GENERATED = "ontology_generated"  # 本体已生成
-    GRAPH_BUILDING = "graph_building"    # 图谱构建中
-    GRAPH_COMPLETED = "graph_completed"  # 图谱构建完成
-    FAILED = "failed"                # 失败
+    CREATED = "created"              # 
+    ONTOLOGY_GENERATED = "ontology_generated"  # 
+    GRAPH_BUILDING = "graph_building"    # 
+    GRAPH_COMPLETED = "graph_completed"  # 
+    FAILED = "failed"                # 
 
 
 @dataclass
@@ -32,24 +32,24 @@ class Project:
     created_at: str
     updated_at: str
     
-    # 文件信息
+    # 
     files: List[Dict[str, str]] = field(default_factory=list)  # [{filename, path, size}]
     total_text_length: int = 0
     
-    # 本体信息（接口1生成后填充）
+    # 1
     ontology: Optional[Dict[str, Any]] = None
     analysis_summary: Optional[str] = None
     
-    # 图谱信息（接口2完成后填充）
+    # 2
     graph_id: Optional[str] = None
     graph_build_task_id: Optional[str] = None
     
-    # 配置
+    # 
     simulation_requirement: Optional[str] = None
     chunk_size: int = 500
     chunk_overlap: int = 50
     
-    # 错误信息
+    # 
     error: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
@@ -101,7 +101,7 @@ class Project:
 class ProjectManager:
     """项目管理器 - 负责项目的持久化存储和检索"""
     
-    # 项目存储根目录
+    # 
     PROJECTS_DIR = os.path.join(Config.UPLOAD_FOLDER, 'projects')
     
     @classmethod
@@ -153,13 +153,13 @@ class ProjectManager:
             updated_at=now
         )
         
-        # 创建项目目录结构
+        # 
         project_dir = cls._get_project_dir(project_id)
         files_dir = cls._get_project_files_dir(project_id)
         os.makedirs(project_dir, exist_ok=True)
         os.makedirs(files_dir, exist_ok=True)
         
-        # 保存项目元数据
+        # 
         cls.save_project(project)
         
         return project
@@ -213,7 +213,7 @@ class ProjectManager:
             if project:
                 projects.append(project)
         
-        # 按创建时间倒序排序
+        # 
         projects.sort(key=lambda p: p.created_at, reverse=True)
         
         return projects[:limit]
@@ -253,15 +253,15 @@ class ProjectManager:
         files_dir = cls._get_project_files_dir(project_id)
         os.makedirs(files_dir, exist_ok=True)
         
-        # 生成安全的文件名
+        # 
         ext = os.path.splitext(original_filename)[1].lower()
         safe_filename = f"{uuid.uuid4().hex[:8]}{ext}"
         file_path = os.path.join(files_dir, safe_filename)
         
-        # 保存文件
+        # 
         file_storage.save(file_path)
         
-        # 获取文件大小
+        # 
         file_size = os.path.getsize(file_path)
         
         return {

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qestron Labs — Live Workspace</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root {
+  --bg:     #07070f;
+  --bg2:    #0c0c18;
+  --bg3:    #111120;
+  --bg4:    #161626;
+  --accent: #7c6dff;
+  --teal:   #00e5b0;
+  --red:    #ff5f5f;
+  --amber:  #ffb84d;
+  --blue:   #4da6ff;
+  --pink:   #ff6eb4;
+  --text:   #e8e8ff;
+  --text2:  #8888aa;
+  --text3:  #44445a;
+  --border: rgba(124,109,255,0.12);
+  --border2:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; overflow:hidden; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; display:flex; }
+
+/* ── AGENT SIDEBAR ─────────────────────────────────────────── */
+.agent-sidebar {
+  width: 200px; min-width:200px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; height: 100vh;
+}
+.sidebar-logo {
+  padding: 1rem 1rem 0.75rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1rem;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: -0.3px;
+}
+.sidebar-logo span { color: var(--accent); }
+.agent-section { padding: 0.6rem 0; }
+.agent-section-title {
+  font-size: 0.62rem; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 2px;
+  padding: 0.3rem 1rem 0.4rem;
+}
+.agent-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.45rem 1rem; cursor: pointer;
+  font-size: 0.8rem; color: var(--text2);
+  transition: all 0.15s; border: none;
+  background: transparent; width: 100%; text-align: left;
+  position: relative;
+}
+.agent-btn:hover { background: rgba(124,109,255,0.06); color: var(--text); }
+.agent-btn.active { background: rgba(124,109,255,0.1); color: var(--accent); }
+.agent-btn.active::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.agent-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-active { background: var(--teal); animation: blink 1.5s infinite; }
+.dot-idle   { background: var(--text3); }
+.dot-busy   { background: var(--amber); animation: blink 0.8s infinite; }
+.dot-error  { background: var(--red); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.agent-count {
+  margin-left: auto; font-size: 0.65rem;
+  background: rgba(124,109,255,0.15); color: var(--accent);
+  padding: 0.1rem 0.4rem; border-radius: 3px;
+}
+
+/* ── MAIN AREA ─────────────────────────────────────────────── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── TOP BAR ───────────────────────────────────────────────── */
+.topbar {
+  height: 44px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1rem; gap: 1rem;
+  background: var(--bg2); flex-shrink: 0;
+}
+.phase-badge {
+  font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace; font-weight: 500;
+}
+.phase-planning  { background:rgba(77,166,255,0.15); color:var(--blue); }
+.phase-building  { background:rgba(0,229,176,0.15);  color:var(--teal); }
+.phase-reviewing { background:rgba(255,184,77,0.15); color:var(--amber); }
+.phase-testing   { background:rgba(255,95,95,0.15);  color:var(--red); }
+.phase-deploying { background:rgba(124,109,255,0.15);color:var(--accent); }
+.phase-complete  { background:rgba(0,229,176,0.2);   color:var(--teal); }
+/* ── GRAPH ─────────────────────────────────────────────────── */
+.graph-container { position:relative; width:100%; height:100%; background:var(--bg); overflow:hidden; }
+.graph-svg { width:100%; height:100%; }
+.graph-legend { position:absolute; bottom:1rem; right:1rem; display:flex; flex-direction:column; gap:0.3rem; background:rgba(7,7,15,0.9); border:1px solid var(--border); border-radius:8px; padding:0.75rem; }
+.legend-item { display:flex; align-items:center; gap:0.5rem; font-size:0.7rem; color:var(--text2); }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+.detail-panel { position:absolute; top:1rem; right:1rem; width:220px; background:rgba(12,12,24,0.95); border:1px solid var(--accent); border-radius:8px; padding:0.75rem; display:none; flex-direction:column; gap:0.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.5); z-index:100; }
+.detail-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.3rem; }
+.detail-title { font-weight:600; font-size:0.8rem; color:var(--accent); }
+.detail-close { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; }
+.det-row { font-size:0.7rem; color:var(--text2); display:flex; gap:0.3rem; margin-top:0.2rem;}
+
+.tb-sep { width: 1px; height: 20px; background: var(--border); }
+.tb-stat { font-size: 0.75rem; color: var(--text2); display:flex;gap:0.3rem;align-items:center; }
+.tb-stat b { color: var(--text); font-weight: 500; }
+.tb-live { margin-left:auto; display:flex; align-items:center; gap:0.4rem; font-size:0.72rem; color:var(--teal); }
+.tb-live-dot { width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 1s infinite; }
+
+/* ── TAB BAR ───────────────────────────────────────────────── */
+.tabbar {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--bg2); flex-shrink: 0;
+}
+.tab {
+  padding: 0.55rem 1.25rem; font-size: 0.8rem; cursor: pointer;
+  color: var(--text2); border-bottom: 2px solid transparent;
+  transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-badge {
+  font-size: 0.62rem; background: rgba(124,109,255,0.2);
+  color: var(--accent); padding: 0.1rem 0.4rem; border-radius: 3px;
+}
+
+/* ── CONTENT AREA ──────────────────────────────────────────── */
+.content { flex: 1; overflow: hidden; display: flex; }
+.panel { display: none; width: 100%; overflow: hidden; }
+.panel.active { display: flex; }
+
+/* ── WORKSPACE VIEW ────────────────────────────────────────── */
+.workspace-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  width: 100%; height: 100%;
+  background: var(--border);
+}
+.ws-pane {
+  background: var(--bg);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.ws-pane-header {
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border2);
+  font-size: 0.7rem; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--bg2); flex-shrink:0;
+}
+.ws-pane-header .pane-title { color: var(--text); font-weight: 500; }
+.ws-body { flex: 1; overflow-y: auto; padding: 0.75rem; }
+
+/* Code pane */
+.code-file {
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border2);
+  border-radius: 6px; overflow: hidden;
+}
+.code-file-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--bg3); font-family:'IBM Plex Mono',monospace;
+  font-size: 0.72rem; border-bottom: 1px solid var(--border2);
+}
+.code-file-name { color: var(--teal); }
+.code-file-author { margin-left:auto; color:var(--text3); }
+.code-file-status { font-size:0.65rem; padding:0.1rem 0.4rem; border-radius:3px; }
+.status-approved { background:rgba(0,229,176,0.12); color:var(--teal); }
+.status-review   { background:rgba(255,184,77,0.12); color:var(--amber); }
+.status-writing  { background:rgba(124,109,255,0.12); color:var(--accent); }
+.code-preview {
+  padding: 0.6rem 0.75rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem; line-height: 1.7;
+  color: var(--text2); background: var(--bg);
+  max-height: 80px; overflow: hidden;
+}
+.code-preview .kw  { color: var(--accent); }
+.code-preview .fn  { color: var(--blue); }
+.code-preview .st  { color: var(--amber); }
+.code-preview .cm  { color: var(--text3); }
+.review-bar {
+  display: flex; align-items: center; gap: 0.3rem;
+  padding: 0.3rem 0.75rem; background: var(--bg3);
+  font-size: 0.68rem;
+}
+.review-pip { width:8px;height:8px;border-radius:50%; }
+.pip-done { background:var(--teal); }
+.pip-empty { background:var(--text3); }
+
+/* Debate pane */
+.debate-item {
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border2);
+  border-radius: 8px; overflow: hidden;
+}
+.debate-header {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg3);
+  display: flex; align-items: center; gap: 0.5rem;
+  border-bottom: 1px solid var(--border2);
+}
+.debate-topic-label { font-size:0.7rem; color:var(--amber); font-weight:500; }
+.debate-time { margin-left:auto; font-size:0.65rem; color:var(--text3); }
+.debate-messages { padding: 0.5rem 0.75rem; }
+.debate-msg {
+  display: flex; gap: 0.5rem; margin-bottom: 0.4rem;
+  padding: 0.35rem 0.5rem; border-radius: 5px;
+}
+.debate-msg.initiator { background:rgba(124,109,255,0.06); }
+.debate-msg.response  { background:rgba(0,229,176,0.04); margin-left:1rem; }
+.debate-msg.veto      { background:rgba(255,95,95,0.06); border-left:2px solid var(--red); }
+.debate-agent-name { font-size:0.72rem; font-weight:500; flex-shrink:0; min-width:80px; }
+.debate-text { font-size:0.78rem; color:var(--text2); line-height:1.5; }
+
+/* Activity log pane */
+.log-item {
+  display: flex; gap: 0.5rem; align-items: flex-start;
+  padding: 0.3rem 0; border-bottom:1px solid var(--border2);
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+}
+.log-time  { color:var(--text3); flex-shrink:0; }
+.log-agent { flex-shrink:0; min-width:80px; }
+.log-action { color:var(--text2); line-height:1.4; }
+.log-ceo    { color:var(--accent); }
+.log-cto    { color:var(--blue); }
+.log-pm     { color:var(--amber); }
+.log-dev    { color:var(--teal); }
+.log-qa     { color:var(--red); }
+.log-devops { color:var(--pink); }
+.log-sec    { color:#ff9f43; }
+.log-head   { color:#a29bfe; }
+
+/* Bug pane */
+.bug-card {
+  padding: 0.6rem 0.75rem; border-radius:7px;
+  margin-bottom:0.5rem; border:1px solid var(--border2);
+}
+.bug-open   { border-left:3px solid var(--red);   background:rgba(255,95,95,0.04); }
+.bug-fixed  { border-left:3px solid var(--teal);  background:rgba(0,229,176,0.04); }
+.bug-header { display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem; }
+.bug-id     { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text3); }
+.bug-sev    { font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:3px; }
+.sev-critical{ background:rgba(255,95,95,0.2); color:var(--red); }
+.sev-high   { background:rgba(255,184,77,0.2);  color:var(--amber); }
+.sev-medium { background:rgba(77,166,255,0.2);  color:var(--blue); }
+.bug-file   { font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--teal); }
+.bug-desc   { font-size:0.78rem;color:var(--text2);line-height:1.4; }
+.bug-fix    { font-size:0.73rem;color:var(--teal);margin-top:0.25rem; }
+
+/* ── TESTING PANEL ─────────────────────────────────────────── */
+.testing-layout { display:grid; grid-template-columns:280px 1fr; width:100%; height:100%; }
+.test-sidebar {
+  background:var(--bg2); border-right:1px solid var(--border);
+  overflow-y:auto; padding:0.75rem;
+}
+.test-suite {
+  padding:0.6rem 0.75rem; border-radius:7px; margin-bottom:0.4rem;
+  border:1px solid var(--border2); cursor:pointer; transition:all 0.15s;
+}
+.test-suite:hover,.test-suite.active { border-color:rgba(124,109,255,0.3); background:rgba(124,109,255,0.05); }
+.test-suite-name { font-size:0.82rem;font-weight:500;margin-bottom:0.25rem; }
+.test-suite-meta { font-size:0.7rem;color:var(--text2); display:flex;gap:0.75rem; }
+.test-pass { color:var(--teal); }
+.test-fail { color:var(--red); }
+.test-skip { color:var(--text3); }
+.test-progress { height:3px;background:var(--bg3);border-radius:2px;margin-top:0.4rem;overflow:hidden; }
+.test-progress-fill { height:100%;border-radius:2px;background:var(--teal);transition:width 0.5s; }
+.test-main { flex:1;overflow-y:auto;padding:1rem; }
+.test-header { margin-bottom:1rem; }
+.test-title { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.25rem; }
+.test-summary { display:flex;gap:1rem;margin-bottom:1rem; }
+.test-stat { background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:0.75rem 1rem;flex:1;text-align:center; }
+.test-stat-num { font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700; }
+.test-stat-label { font-size:0.7rem;color:var(--text2);margin-top:0.2rem; }
+.test-case { display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border2); }
+.test-icon { font-size:0.85rem;flex-shrink:0;margin-top:2px; }
+.test-name { font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--text);margin-bottom:0.15rem; }
+.test-detail { font-size:0.72rem;color:var(--text2); }
+.test-duration { margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--text3);flex-shrink:0; }
+
+/* ── DECISIONS PANEL ───────────────────────────────────────── */
+.decisions-layout { width:100%;height:100%;overflow-y:auto;padding:1.25rem; }
+.decision-card {
+  background:var(--bg3);border:1px solid var(--border2);border-radius:10px;
+  padding:1rem;margin-bottom:0.75rem;
+  border-left:3px solid var(--accent);
+}
+.decision-card.cto  { border-left-color:var(--blue); }
+.decision-card.pm   { border-left-color:var(--amber); }
+.decision-card.head { border-left-color:var(--pink); }
+.dc-header { display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem; }
+.dc-agent { font-size:0.75rem;font-weight:500;padding:0.2rem 0.6rem;border-radius:4px; }
+.dc-agent-ceo  { background:rgba(124,109,255,0.15);color:var(--accent); }
+.dc-agent-cto  { background:rgba(77,166,255,0.15); color:var(--blue); }
+.dc-agent-pm   { background:rgba(255,184,77,0.15); color:var(--amber); }
+.dc-agent-head { background:rgba(255,110,180,0.15);color:var(--pink); }
+.dc-time { margin-left:auto;font-size:0.68rem;color:var(--text3); }
+.dc-decision { font-size:0.88rem;font-weight:500;color:var(--text);margin-bottom:0.35rem; }
+.dc-reason { font-size:0.8rem;color:var(--text2);line-height:1.6; }
+
+/* ── SCROLLBAR ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border);border-radius:2px; }
+
+/* ── TYPING ANIMATION ──────────────────────────────────────── */
+@keyframes typing {
+  from { width:0 } to { width:100% }
+}
+.typing-cursor::after {
+  content:'█'; color:var(--accent); animation:blink 0.8s infinite;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ─── AGENT SIDEBAR ──────────────────────────────────────── -->
+<div class="agent-sidebar">
+  <div class="sidebar-logo">Qestron<span>Labs</span></div>
+  
+  <button id="btn-all-agents" class="agent-btn active" onclick="filterAgent('all', this)" style="margin:0 0.75rem 0.75rem; width:calc(100% - 1.5rem); background:rgba(255,255,255,0.03); justify-content:center;">
+    <span class="agent-dot" style="background:var(--accent)"></span> 🌐 ALL AGENTS
+  </button>
+
+  <div class="agent-section">
+    <div class="agent-section-title">C-Suite</div>
+    <button class="agent-btn" onclick="filterAgent('CEO-001', this)">
+      <span class="agent-dot dot-active"></span> CEO-001 <span class="agent-count">1</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('CTO-001', this)">
+      <span class="agent-dot dot-active"></span> CTO-001 <span class="agent-count">1</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('ARCH-001', this)">
+      <span class="agent-dot dot-busy"></span> ARCH-001 <span class="agent-count">1</span>
+    </button>
+  </div>
+
+  <div class="agent-section">
+    <div class="agent-section-title">Management</div>
+    <button class="agent-btn" onclick="filterAgent('PM', this)">
+      <span class="agent-dot dot-active"></span> PM Team <span class="agent-count">2</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('HEAD', this)">
+      <span class="agent-dot dot-busy"></span> Dept Heads <span class="agent-count">6</span>
+    </button>
+  </div>
+
+  <div class="agent-section">
+    <div class="agent-section-title">Developers</div>
+    <button class="agent-btn" onclick="filterAgent('BE', this)">
+      <span class="agent-dot dot-busy"></span> Backend <span class="agent-count">5</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('FE', this)">
+      <span class="agent-dot dot-busy"></span> Frontend <span class="agent-count">5</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('MOB', this)">
+      <span class="agent-dot dot-active"></span> Mobile <span class="agent-count">2</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('DB', this)">
+      <span class="agent-dot dot-idle"></span> Database <span class="agent-count">2</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('ML', this)">
+      <span class="agent-dot dot-active"></span> ML/AI <span class="agent-count">2</span>
+    </button>
+  </div>
+
+  <div class="agent-section">
+    <div class="agent-section-title">Quality</div>
+    <button class="agent-btn" onclick="filterAgent('QA', this)">
+      <span class="agent-dot dot-busy"></span> QA Team <span class="agent-count">3</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('BUG', this)">
+      <span class="agent-dot dot-active"></span> Bug Hunter <span class="agent-count">1</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('REV', this)">
+      <span class="agent-dot dot-busy"></span> Code Review <span class="agent-count">1</span>
+    </button>
+  </div>
+
+  <div class="agent-section">
+    <div class="agent-section-title">DevOps & Security</div>
+    <button class="agent-btn" onclick="filterAgent('OPS', this)">
+      <span class="agent-dot dot-idle"></span> DevOps <span class="agent-count">2</span>
+    </button>
+    <button class="agent-btn" onclick="filterAgent('SEC', this)">
+      <span class="agent-dot dot-active"></span> Security <span class="agent-count">2</span>
+    </button>
+  </div>
+</div>
+
+<!-- ─── MAIN ───────────────────────────────────────────────── -->
+<div class="main">
+
+  <div class="topbar">
+    <span id="phaseBadge" class="phase-badge phase-building">PHASE 2 — BUILDING</span>
+    <span class="tb-sep"></span>
+    <span class="tb-stat"><b id="fileCount">0</b> files</span>
+    <span class="tb-stat"><b id="approvedCount">0</b> approved</span>
+    <span class="tb-sep"></span>
+    <span class="tb-stat"><b id="debateCount" style="color:var(--amber)">0</b> debates</span>
+    <span class="tb-stat"><b id="bugCount" style="color:var(--red)">0</b> bugs</span>
+    <span class="tb-sep"></span>
+    <span class="tb-stat">Project: <b>CoreBanking 2026</b></span>
+    <span class="tb-live"><span class="tb-live-dot"></span> Live</span>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab" onclick="showTab('graph', this)">🌐 Graph</div>
+    <div class="tab active" onclick="showTab('workspace', this)">🖥 Workspace</div>
+    <div class="tab" onclick="showTab('debates', this)">💬 Debates <span class="tab-badge" id="debateBadge">0</span></div>
+    <div class="tab" onclick="showTab('testing', this)">🧪 Testing <span class="tab-badge" id="testBadge">0</span></div>
+    <div class="tab" onclick="showTab('decisions', this)">📋 Decisions <span class="tab-badge" id="decBadge">0</span></div>
+    <div class="tab" onclick="showTab('log', this)">📡 Agent Log</div>
+  </div>
+
+  <div class="content">
+    <!-- ── GRAPH TAB ────────────────────────────────────────── -->
+    <div class="panel" id="panel-graph">
+      <div class="graph-container" style="position:relative; width:100%; height:100%; overflow:hidden;">
+        <svg id="graphSvg" class="graph-svg"></svg>
+        
+        <!-- Node Detail Panel -->
+        <div id="nodeDetailPanel" class="detail-panel">
+          <div class="detail-header">
+            <span id="detTitle" class="detail-title">Node Details</span>
+            <button class="detail-close" onclick="closeDet()">×</button>
+          </div>
+          <div class="detail-content">
+            <div class="det-row"><span class="det-lbl">ID:</span> <span id="detId"></span></div>
+            <div class="det-row"><span class="det-lbl">Group:</span> <span id="detGrp"></span></div>
+            <div class="det-row"><span class="det-lbl">Size:</span> <span id="detSize"></span></div>
+          </div>
+        </div>
+
+        <div class="graph-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#7c6dff"></span> Executive</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#a29bfe"></span> Management</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#00e5b0"></span> Backend</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#4da6ff"></span> Frontend</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#ff5f5f"></span> QA</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#ffd700"></span> Workspace</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL WORKSPACE -->
+    <div class="panel active" id="panel-workspace">
+      <div class="workspace-layout">
+        <div class="ws-pane"><div class="ws-pane-header"><span>●</span> Live Code</div><div class="ws-body" id="codePane"></div></div>
+        <div class="ws-pane"><div class="ws-pane-header"><span>●</span> Active Debates</div><div class="ws-body" id="debatePane"></div></div>
+        <div class="ws-pane"><div class="ws-pane-header"><span>●</span> Bugs</div><div class="ws-body" id="bugPane"></div></div>
+        <div class="ws-pane"><div class="ws-pane-header"><span>●</span> Review Queue</div><div class="ws-body" id="reviewPane"></div></div>
+      </div>
+    </div>
+        <!-- ── DEBATES TAB ────────────────────────────────────── -->
+    <div class="panel" id="panel-debates">
+      <div style="width:100%;height:100%;overflow-y:auto;padding:1.25rem;" id="fullDebateList">
+        <div style="color:var(--text3);font-family:'IBM Plex Mono',monospace;">No debates yet...</div>
+      </div>
+    </div>
+
+    <!-- ── TESTING TAB ─────────────────────────────────────── -->
+    <div class="panel" id="panel-testing">
+      <div class="testing-layout">
+        <div class="test-sidebar">
+          <div style="font-size:0.7rem;color:var(--text2);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:1.5px;">Test Suites</div>
+          <div class="test-suite active" onclick="showTestSuite('backend')">
+            <div class="test-suite-name">Backend API Tests</div>
+            <div class="test-suite-meta"><span class="test-pass" id="be-pass">0 pass</span><span class="test-fail" id="be-fail">0 fail</span></div>
+            <div class="test-progress"><div class="test-progress-fill" id="be-prog" style="width:0%"></div></div>
+          </div>
+          <div class="test-suite" onclick="showTestSuite('frontend')">
+            <div class="test-suite-name">Frontend E2E Tests</div>
+            <div class="test-suite-meta"><span class="test-pass" id="fe-pass">0 pass</span><span class="test-fail" id="fe-fail">0 fail</span></div>
+            <div class="test-progress"><div class="test-progress-fill" id="fe-prog" style="width:0%"></div></div>
+          </div>
+          <div class="test-suite" onclick="showTestSuite('security')">
+            <div class="test-suite-name">Security Audit</div>
+            <div class="test-suite-meta"><span class="test-pass" id="sec-pass">0 pass</span><span class="test-fail" id="sec-fail">0 fail</span></div>
+            <div class="test-progress"><div class="test-progress-fill" id="sec-prog" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="test-main" id="testMain">
+          <div class="test-header"><div class="test-title" id="testSuiteTitle">Backend API Tests</div></div>
+          <div class="test-summary">
+            <div class="test-stat"><div class="test-stat-num" id="ts-pass" style="color:var(--teal)">0</div><div class="test-stat-label">Passed</div></div>
+            <div class="test-stat"><div class="test-stat-num" id="ts-fail" style="color:var(--red)">0</div><div class="test-stat-label">Failed</div></div>
+            <div class="test-stat"><div class="test-stat-num" id="ts-total">0</div><div class="test-stat-label">Total</div></div>
+          </div>
+          <div id="testCaseList"><div style="color:var(--text3);font-size:0.8rem;">Waiting for test results...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DECISIONS TAB ──────────────────────────────────── -->
+    <div class="panel" id="panel-decisions">
+      <div class="decisions-layout" id="decisionList">
+        <div style="color:var(--text3);font-family:'IBM Plex Mono',monospace;">Waiting for decisions...</div>
+      </div>
+    </div>
+
+    <!-- ── LOG TAB ────────────────────────────────────────── -->
+    <div class="panel" id="panel-log">
+      <div style="width:100%;height:100%;overflow-y:auto;padding:0.75rem;" id="fullLogList">
+        <div style="color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;">No agent activity yet...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let host = window.location.hostname;
+if (host === 'localhost' || host === 'localhost.') host = '127.0.0.1';
+const API = window.location.protocol + '//' + host + ':7777/api/state';
+
+// ── BROWSER ERROR DIAGNOSTICS ──────────────────────────
+window.onerror = function(msg, url, line, col, error) {
+  const errDiv = document.createElement('div');
+  errDiv.style = "position:fixed;top:0;left:0;width:100%;background:rgba(220,53,69,0.9);color:white;padding:0.5rem;z-index:99999;font-family:monospace;font-size:0.75rem;border-bottom:2px solid black;";
+  errDiv.innerHTML = `🚨 <b>JS Error:</b> ${msg} <br> <i>Line ${line}:${col}</i> | File: ${url.split('/').pop()}`;
+  document.body.appendChild(errDiv);
+  console.error("OVERLAY CAPTURED ERROR:", error);
+};
+let currentFilter = 'all';
+let currentTestSuite = 'backend';
+let state = null;
+let graphRendered = false;
+
+const GROUP_COLORS = {
+  executive: '#7c6dff', management: '#a29bfe', backend: '#00e5b0',
+  frontend: '#4da6ff', mobile: '#00cec9', database: '#55efc4',
+  ai: '#fd79a8', qa: '#ff5f5f', security: '#ff7675',
+  devops: '#fdcb6e', client: '#74b9ff', workspace: '#ffd700',
+  hr: '#e056fd', legal: '#f0932b', finance: '#badc58',
+  sales: '#ffbe76', marketing: '#ff7979', support: '#7ed6df'
+};
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  if (id === 'graph' && !graphRendered) {
+    renderGraph();
+    graphRendered = true;
+  }
+}
+
+function filterAgent(prefix, el) {
+  currentFilter = prefix;
+  document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    const fallback = document.getElementById('btn-all-agents');
+    if (fallback) fallback.classList.add('active');
+  }
+  if (state) render(state);
+}
+
+function agentColor(name) {
+  if (!name) return 'var(--text2)';
+  if (name.includes('CEO')) return 'var(--accent)';
+  if (name.includes('CTO')) return 'var(--blue)';
+  if (name.includes('PM'))  return 'var(--amber)';
+  return 'var(--teal)';
+}
+
+function render(s) {
+  state = s;
+  const rawFiles    = s.files        || {};
+  const rawDebates  = s.debate_board || [];
+  const decisions   = s.decisions    || [];
+  const rawBugs     = s.bugs         || [];
+  const logs        = s.agent_logs   || [];
+  const reviews     = s.review_queue || [];
+  const testRes     = s.test_results || {};
+
+  // Global Filter
+  const files = currentFilter === 'all' ? rawFiles : Object.fromEntries(
+    Object.entries(rawFiles).filter(([name, f]) => f.written_by?.includes(currentFilter) || name.includes(currentFilter))
+  );
+  const debates = currentFilter === 'all' ? rawDebates : rawDebates.filter(d => d.agent?.includes(currentFilter));
+  const bugs = currentFilter === 'all' ? rawBugs : rawBugs.filter(b => b.file?.includes(currentFilter) || b.id?.includes(currentFilter));
+
+  document.getElementById('fileCount').textContent     = Object.keys(files).length;
+  document.getElementById('debateCount').textContent   = debates.length;
+
+  const pb = document.getElementById('phaseBadge');
+  const phase = s.phase || 'planning';
+  pb.className = 'phase-badge ' + (phase==='planning'?'phase-planning':phase==='building'?'phase-building':phase==='reviewing'?'phase-reviewing':phase==='testing'?'phase-testing':'phase-complete');
+  pb.textContent = phase.toUpperCase();
+
+  const codePane = document.getElementById('codePane');
+  codePane.innerHTML = Object.entries(files).slice(-5).reverse().map(([name, f]) => `
+    <div class="code-file">
+      <div class="code-file-header">
+        <span class="code-file-name">${name}</span><span class="code-file-author">${f.written_by}</span>
+      </div>
+      <div class="code-preview">${escHtml(f.content?.substring(0,180))}</div>
+    </div>`).join('');
+
+  const debatePane = document.getElementById('debatePane');
+  debatePane.innerHTML = debates.slice(-3).reverse().map(d => `
+    <div class="debate-item">
+      <div class="debate-header">
+        <span style="color:${agentColor(d.agent)}">${d.agent}</span> — <span>${d.topic}</span>
+      </div>
+      <div class="debate-messages">
+        <div class="debate-msg initiator">${d.opinion?.substring(0,120)}</div>
+        ${(d.responses||[]).map(r => `<div class="debate-msg response">${r.response?.substring(0,100)}</div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const bugPane = document.getElementById('bugPane');
+  bugPane.innerHTML = bugs.slice(-4).reverse().map(b => `
+    <div class="bug-card ${b.status==='fixed'?'bug-fixed':'bug-open'}">
+      <div class="bug-header"><span>${b.id}</span> | <span>${b.file}</span></div>
+      <div>${b.description}</div>
+    </div>`).join('');
+
+  const logList = document.getElementById('fullLogList');
+  const filteredLogs = currentFilter==='all' ? logs : logs.filter(l => l.agent?.includes(currentFilter));
+  logList.innerHTML = filteredLogs.slice().reverse().map(l => `
+    <div class="log-item">
+      <span class="log-time">[${l.time}]</span>
+      <span style="color:${agentColor(l.agent)}">${l.agent}</span>: ${l.action}
+    </div>`).join('');
+
+  renderTestSuite(currentTestSuite, testRes);
+}
+
+function showTestSuite(key) {
+  currentTestSuite = key;
+  document.querySelectorAll('.test-suite').forEach(s => s.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if (state) renderTestSuite(key, state.test_results || {});
+}
+
+function renderTestSuite(suiteKey, testRes) {
+  const titles = { backend: 'Backend API Tests', frontend: 'Frontend E2E Tests', security: 'Security Audit' };
+  document.getElementById('testSuiteTitle').textContent = titles[suiteKey] || suiteKey;
+  const cases = testRes[suiteKey] || [];
+  const pass = cases.filter(c => c.status === 'pass').length;
+  const fail = cases.filter(c => c.status === 'fail').length;
+  document.getElementById('ts-pass').textContent = pass;
+  document.getElementById('ts-fail').textContent = fail;
+  document.getElementById('ts-total').textContent = pass + fail;
+  const list = document.getElementById('testCaseList');
+  if (!cases.length) { list.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;">No cases found.</div>'; return; }
+  list.innerHTML = cases.map(c => `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.4rem;background:rgba(255,255,255,0.02);border:1px solid var(--border2);margin-bottom:0.25rem;"><span>${c.status==='pass'?'✅':'❌'}</span><div><div style="font-size:0.75rem">${c.name}</div><div style="font-size:0.65rem;color:var(--text2)">${c.detail}</div></div><span style="margin-left:auto;font-size:0.65rem;color:var(--text3)">${c.dur}</span></div>`).join('');
+}
+
+function closeDet() {
+  const p = document.getElementById('nodeDetailPanel');
+  if (p) p.style.display = 'none';
+}
+
+async function renderGraph() {
+  const svg = d3.select("#graphSvg");
+  const container = document.querySelector('.graph-container');
+  const W = container.clientWidth || 800;
+  const H = container.clientHeight || 500;
+  svg.attr("width", W).attr("height", H);
+  svg.selectAll("*").remove();
+
+  let nodes = [], links = [];
+  try {
+    let gHost = window.location.hostname;
+    if (gHost === 'localhost' || gHost === 'localhost.') gHost = '127.0.0.1';
+    const res = await fetch(window.location.protocol + '//' + gHost + ':5002/api/workspace/graph');
+    const data = await res.json();
+    nodes = data.nodes || [];
+    links = data.links || [];
+  } catch (e) {
+    console.error("Fetch graph failed, using fallback", e);
+    nodes = [{id:"CEO-001",label:"CEO",group:"executive",size:28},{id:"CTO-001",label:"CTO",group:"executive",size:24},{id:"ARCH-001",label:"Architect",group:"executive",size:18},{id:"PM-001",label:"PM-1",group:"management",size:16},{id:"HEAD-BE",label:"Head BE",group:"management",size:16},{id:"HEAD-FE",label:"Head FE",group:"management",size:16},{id:"BE-CLUSTER",label:"Backend\n200",group:"backend",size:32},{id:"FE-CLUSTER",label:"Frontend\n200",group:"frontend",size:32},{id:"WORKSPACE",label:"SHARED\nWORKSPACE",group:"workspace",size:38}];
+    links = [{source:"CEO-001",target:"CTO-001",type:"reports"},{source:"CEO-001",target:"PM-001",type:"reports"},{source:"CTO-001",target:"ARCH-001",type:"reports"},{source:"CTO-001",target:"HEAD-BE",type:"reports"},{source:"CTO-001",target:"HEAD-FE",type:"reports"},{source:"HEAD-BE",target:"BE-CLUSTER",type:"manages"},{source:"HEAD-FE",target:"FE-CLUSTER",type:"manages"},{source:"BE-CLUSTER",target:"WORKSPACE",type:"writes"},{source:"FE-CLUSTER",target:"WORKSPACE",type:"writes"}];
+  }
+
+  const sim = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(40))
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(W / 2, H / 2))
+    .force("collision", d3.forceCollide().radius(d => (d.size || 15) + 3));
+
+  const g = svg.append("g");
+  const zoom = d3.zoom().scaleExtent([0.1, 5]).on("zoom", e => g.attr("transform", e.transform));
+  svg.call(zoom);
+  // Initial scale out to fit 1,000 dense distinct nodes constellation comfortably
+  svg.call(zoom.transform, d3.zoomIdentity.translate(W * 0.15, H * 0.15).scale(0.4));
+
+  const link = g.append("g").selectAll("line").data(links).enter().append("line")
+    .attr("stroke", "#44446666").attr("stroke-width", 1.5);
+
+  const nodeEnter = g.append("g").selectAll("g").data(nodes).enter().append("g")
+    .attr("class", "graph-node")
+    .style("cursor", "pointer")
+    .call(d3.drag()
+      .on("start", (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
+      .on("end", (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }))
+    .on("click", (e, d) => {
+      e.stopPropagation();
+      const p = document.getElementById('nodeDetailPanel');
+      if (!p) return;
+      p.style.display = 'flex';
+      document.getElementById('detTitle').textContent = d.label;
+      document.getElementById('detId').textContent = d.id;
+      document.getElementById('detGrp').textContent = d.group;
+      document.getElementById('detSize').textContent = d.size;
+    });
+
+  nodeEnter.append("circle").attr("r", d => d.size || 12).attr("fill", d => (GROUP_COLORS[d.group] || '#666') + '33').attr("stroke", d => GROUP_COLORS[d.group] || '#666').attr("stroke-width", 1.5);
+  nodeEnter.append("circle").attr("r", 3).attr("fill", d => GROUP_COLORS[d.group] || '#666');
+  nodeEnter.append("text").attr("text-anchor", "middle").attr("dy", d => (d.size || 12) + 14).attr("font-size", "9px").attr("fill", "#8888aa").attr("font-family", "IBM Plex Mono, monospace").text(d => d.label);
+
+  svg.on("click", () => closeDet());
+
+  sim.on("tick", () => {
+    link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+    nodeEnter.attr("transform", d => `translate(${d.x},${d.y})`);
+  });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function refresh() {
+  try {
+    const res = await fetch(API);
+    const s = await res.json();
+    render(s);
+  } catch(e) {
+    if (state === null) renderDemo();
+  }
+}
+
+function renderDemo() {
+  render({
+    phase: "building",
+    files: { "backend/app.py": { content: "from fastapi import FastAPI\napp = FastAPI()", written_by: "BE-001" } },
+    debate_board: [ { agent: "CTO-001", topic: "Microservices vs Monolith", opinion: "We will build FastAPI microservices.", responses: [] } ],
+    decisions: [ { made_by: "CEO-001", decision: "Project Launch", reason: "Strategic roadmap", time: "09:00" } ],
+    bugs: [ { id: "BUG-001", file: "app.py", description: "Syntax issue", severity: "high", status: "open" } ],
+    agent_logs: [ { time: "09:15", agent: "BE-001", action: "Created fastapi entrypoint" } ]
+  });
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

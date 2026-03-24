@@ -46,7 +46,7 @@ class SearchResult:
         text_parts = [f"搜索查询: {self.query}", f"找到 {self.total_count} 条相关信息"]
         
         if self.facts:
-            text_parts.append("\n### 相关事实:")
+            text_parts.append("\n### :")
             for i, fact in enumerate(self.facts, 1):
                 text_parts.append(f"{i}. {fact}")
         
@@ -87,7 +87,7 @@ class EdgeInfo:
     target_node_uuid: str
     source_node_name: Optional[str] = None
     target_node_name: Optional[str] = None
-    # 时间信息
+    # 
     created_at: Optional[str] = None
     valid_at: Optional[str] = None
     invalid_at: Optional[str] = None
@@ -144,12 +144,12 @@ class InsightForgeResult:
     simulation_requirement: str
     sub_queries: List[str]
     
-    # 各维度检索结果
-    semantic_facts: List[str] = field(default_factory=list)  # 语义搜索结果
-    entity_insights: List[Dict[str, Any]] = field(default_factory=list)  # 实体洞察
-    relationship_chains: List[str] = field(default_factory=list)  # 关系链
+    # 
+    semantic_facts: List[str] = field(default_factory=list)  # 
+    entity_insights: List[Dict[str, Any]] = field(default_factory=list)  # 
+    relationship_chains: List[str] = field(default_factory=list)  # 
     
-    # 统计信息
+    # 
     total_facts: int = 0
     total_entities: int = 0
     total_relationships: int = 0
@@ -170,30 +170,30 @@ class InsightForgeResult:
     def to_text(self) -> str:
         """转换为详细的文本格式，供LLM理解"""
         text_parts = [
-            f"## 未来预测深度分析",
+            f"## ",
             f"分析问题: {self.query}",
             f"预测场景: {self.simulation_requirement}",
-            f"\n### 预测数据统计",
+            f"\n### ",
             f"- 相关预测事实: {self.total_facts}条",
             f"- 涉及实体: {self.total_entities}个",
             f"- 关系链: {self.total_relationships}条"
         ]
         
-        # 子问题
+        # 
         if self.sub_queries:
-            text_parts.append(f"\n### 分析的子问题")
+            text_parts.append(f"\n### ")
             for i, sq in enumerate(self.sub_queries, 1):
                 text_parts.append(f"{i}. {sq}")
         
-        # 语义搜索结果
+        # 
         if self.semantic_facts:
-            text_parts.append(f"\n### 【关键事实】(请在报告中引用这些原文)")
+            text_parts.append(f"\n### ()")
             for i, fact in enumerate(self.semantic_facts, 1):
                 text_parts.append(f"{i}. \"{fact}\"")
         
-        # 实体洞察
+        # 
         if self.entity_insights:
-            text_parts.append(f"\n### 【核心实体】")
+            text_parts.append(f"\n### ")
             for entity in self.entity_insights:
                 text_parts.append(f"- **{entity.get('name', '未知')}** ({entity.get('type', '实体')})")
                 if entity.get('summary'):
@@ -201,9 +201,9 @@ class InsightForgeResult:
                 if entity.get('related_facts'):
                     text_parts.append(f"  相关事实: {len(entity.get('related_facts', []))}条")
         
-        # 关系链
+        # 
         if self.relationship_chains:
-            text_parts.append(f"\n### 【关系链】")
+            text_parts.append(f"\n### ")
             for chain in self.relationship_chains:
                 text_parts.append(f"- {chain}")
         
@@ -218,16 +218,16 @@ class PanoramaResult:
     """
     query: str
     
-    # 全部节点
+    # 
     all_nodes: List[NodeInfo] = field(default_factory=list)
-    # 全部边（包括过期的）
+    # 
     all_edges: List[EdgeInfo] = field(default_factory=list)
-    # 当前有效的事实
+    # 
     active_facts: List[str] = field(default_factory=list)
-    # 已过期/失效的事实（历史记录）
+    # /
     historical_facts: List[str] = field(default_factory=list)
     
-    # 统计
+    # 
     total_nodes: int = 0
     total_edges: int = 0
     active_count: int = 0
@@ -249,30 +249,30 @@ class PanoramaResult:
     def to_text(self) -> str:
         """转换为文本格式（完整版本，不截断）"""
         text_parts = [
-            f"## 广度搜索结果（未来全景视图）",
+            f"## ",
             f"查询: {self.query}",
-            f"\n### 统计信息",
+            f"\n### ",
             f"- 总节点数: {self.total_nodes}",
             f"- 总边数: {self.total_edges}",
             f"- 当前有效事实: {self.active_count}条",
             f"- 历史/过期事实: {self.historical_count}条"
         ]
         
-        # 当前有效的事实（完整输出，不截断）
+        # 
         if self.active_facts:
-            text_parts.append(f"\n### 【当前有效事实】(模拟结果原文)")
+            text_parts.append(f"\n### ()")
             for i, fact in enumerate(self.active_facts, 1):
                 text_parts.append(f"{i}. \"{fact}\"")
         
-        # 历史/过期事实（完整输出，不截断）
+        # /
         if self.historical_facts:
-            text_parts.append(f"\n### 【历史/过期事实】(演变过程记录)")
+            text_parts.append(f"\n### /()")
             for i, fact in enumerate(self.historical_facts, 1):
                 text_parts.append(f"{i}. \"{fact}\"")
         
-        # 关键实体（完整输出，不截断）
+        # 
         if self.all_nodes:
-            text_parts.append(f"\n### 【涉及实体】")
+            text_parts.append(f"\n### ")
             for node in self.all_nodes:
                 entity_type = next((l for l in node.labels if l not in ["Entity", "Node"]), "实体")
                 text_parts.append(f"- **{node.name}** ({entity_type})")
@@ -284,11 +284,11 @@ class PanoramaResult:
 class AgentInterview:
     """单个Agent的采访结果"""
     agent_name: str
-    agent_role: str  # 角色类型（如：学生、教师、媒体等）
-    agent_bio: str  # 简介
-    question: str  # 采访问题
-    response: str  # 采访回答
-    key_quotes: List[str] = field(default_factory=list)  # 关键引言
+    agent_role: str  # 
+    agent_bio: str  # 
+    question: str  # 
+    response: str  # 
+    key_quotes: List[str] = field(default_factory=list)  # 
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -302,21 +302,21 @@ class AgentInterview:
     
     def to_text(self) -> str:
         text = f"**{self.agent_name}** ({self.agent_role})\n"
-        # 显示完整的agent_bio，不截断
+        # agent_bio
         text += f"_简介: {self.agent_bio}_\n\n"
         text += f"**Q:** {self.question}\n\n"
         text += f"**A:** {self.response}\n"
         if self.key_quotes:
             text += "\n**关键引言:**\n"
             for quote in self.key_quotes:
-                # 清理各种引号
+                # 
                 clean_quote = quote.replace('\u201c', '').replace('\u201d', '').replace('"', '')
                 clean_quote = clean_quote.replace('\u300c', '').replace('\u300d', '')
                 clean_quote = clean_quote.strip()
-                # 去掉开头的标点
+                # 
                 while clean_quote and clean_quote[0] in '，,；;：:、。！？\n\r\t ':
                     clean_quote = clean_quote[1:]
-                # 过滤包含问题编号的垃圾内容（问题1-9）
+                # 1-9
                 skip = False
                 for d in '123456789':
                     if f'\u95ee\u9898{d}' in clean_quote:
@@ -324,7 +324,7 @@ class AgentInterview:
                         break
                 if skip:
                     continue
-                # 截断过长内容（按句号截断，而非硬截断）
+                # 
                 if len(clean_quote) > 150:
                     dot_pos = clean_quote.find('\u3002', 80)
                     if dot_pos > 0:
@@ -342,20 +342,20 @@ class InterviewResult:
     采访结果 (Interview)
     包含多个模拟Agent的采访回答
     """
-    interview_topic: str  # 采访主题
-    interview_questions: List[str]  # 采访问题列表
+    interview_topic: str  # 
+    interview_questions: List[str]  # 
     
-    # 采访选择的Agent
+    # Agent
     selected_agents: List[Dict[str, Any]] = field(default_factory=list)
-    # 各Agent的采访回答
+    # Agent
     interviews: List[AgentInterview] = field(default_factory=list)
     
-    # 选择Agent的理由
+    # Agent
     selection_reasoning: str = ""
-    # 整合后的采访摘要
+    # 
     summary: str = ""
     
-    # 统计
+    # 
     total_agents: int = 0
     interviewed_count: int = 0
     
@@ -374,24 +374,24 @@ class InterviewResult:
     def to_text(self) -> str:
         """转换为详细的文本格式，供LLM理解和报告引用"""
         text_parts = [
-            "## 深度采访报告",
+            "## ",
             f"**采访主题:** {self.interview_topic}",
             f"**采访人数:** {self.interviewed_count} / {self.total_agents} 位模拟Agent",
-            "\n### 采访对象选择理由",
+            "\n### ",
             self.selection_reasoning or "（自动选择）",
             "\n---",
-            "\n### 采访实录",
+            "\n### ",
         ]
 
         if self.interviews:
             for i, interview in enumerate(self.interviews, 1):
-                text_parts.append(f"\n#### 采访 #{i}: {interview.agent_name}")
+                text_parts.append(f"\n####  #{i}: {interview.agent_name}")
                 text_parts.append(interview.to_text())
                 text_parts.append("\n---")
         else:
             text_parts.append("（无采访记录）\n\n---")
 
-        text_parts.append("\n### 采访摘要与核心观点")
+        text_parts.append("\n### ")
         text_parts.append(self.summary or "（无摘要）")
 
         return "\n".join(text_parts)
@@ -417,7 +417,7 @@ class ZepToolsService:
     - get_entity_summary - 获取实体的关系摘要
     """
     
-    # 重试配置
+    # 
     MAX_RETRIES = 3
     RETRY_DELAY = 2.0
     
@@ -427,7 +427,7 @@ class ZepToolsService:
             raise ValueError("ZEP_API_KEY 未配置")
         
         self.client = Zep(api_key=self.api_key)
-        # LLM客户端用于InsightForge生成子问题
+        # LLMInsightForge
         self._llm_client = llm_client
         logger.info("ZepToolsService 初始化完成")
     
@@ -485,7 +485,7 @@ class ZepToolsService:
         """
         logger.info(f"图谱搜索: graph_id={graph_id}, query={query[:50]}...")
         
-        # 尝试使用Zep Cloud Search API
+        # Zep Cloud Search API
         try:
             search_results = self._call_with_retry(
                 func=lambda: self.client.graph.search(
@@ -502,7 +502,7 @@ class ZepToolsService:
             edges = []
             nodes = []
             
-            # 解析边搜索结果
+            # 
             if hasattr(search_results, 'edges') and search_results.edges:
                 for edge in search_results.edges:
                     if hasattr(edge, 'fact') and edge.fact:
@@ -515,7 +515,7 @@ class ZepToolsService:
                         "target_node_uuid": getattr(edge, 'target_node_uuid', ''),
                     })
             
-            # 解析节点搜索结果
+            # 
             if hasattr(search_results, 'nodes') and search_results.nodes:
                 for node in search_results.nodes:
                     nodes.append({
@@ -524,7 +524,7 @@ class ZepToolsService:
                         "labels": getattr(node, 'labels', []),
                         "summary": getattr(node, 'summary', ''),
                     })
-                    # 节点摘要也算作事实
+                    # 
                     if hasattr(node, 'summary') and node.summary:
                         facts.append(f"[{node.name}]: {node.summary}")
             
@@ -540,7 +540,7 @@ class ZepToolsService:
             
         except Exception as e:
             logger.warning(f"Zep Search API失败，降级为本地搜索: {str(e)}")
-            # 降级：使用本地关键词匹配搜索
+            # 
             return self._local_search(graph_id, query, limit, scope)
     
     def _local_search(
@@ -570,7 +570,7 @@ class ZepToolsService:
         edges_result = []
         nodes_result = []
         
-        # 提取查询关键词（简单分词）
+        # 
         query_lower = query.lower()
         keywords = [w.strip() for w in query_lower.replace(',', ' ').replace('，', ' ').split() if len(w.strip()) > 1]
         
@@ -579,10 +579,10 @@ class ZepToolsService:
             if not text:
                 return 0
             text_lower = text.lower()
-            # 完全匹配查询
+            # 
             if query_lower in text_lower:
                 return 100
-            # 关键词匹配
+            # 
             score = 0
             for keyword in keywords:
                 if keyword in text_lower:
@@ -591,7 +591,7 @@ class ZepToolsService:
         
         try:
             if scope in ["edges", "both"]:
-                # 获取所有边并匹配
+                # 
                 all_edges = self.get_all_edges(graph_id)
                 scored_edges = []
                 for edge in all_edges:
@@ -599,7 +599,7 @@ class ZepToolsService:
                     if score > 0:
                         scored_edges.append((score, edge))
                 
-                # 按分数排序
+                # 
                 scored_edges.sort(key=lambda x: x[0], reverse=True)
                 
                 for score, edge in scored_edges[:limit]:
@@ -614,7 +614,7 @@ class ZepToolsService:
                     })
             
             if scope in ["nodes", "both"]:
-                # 获取所有节点并匹配
+                # 
                 all_nodes = self.get_all_nodes(graph_id)
                 scored_nodes = []
                 for node in all_nodes:
@@ -701,7 +701,7 @@ class ZepToolsService:
                 target_node_uuid=edge.target_node_uuid or ""
             )
 
-            # 添加时间信息
+            # 
             if include_temporal:
                 edge_info.created_at = getattr(edge, 'created_at', None)
                 edge_info.valid_at = getattr(edge, 'valid_at', None)
@@ -761,12 +761,12 @@ class ZepToolsService:
         logger.info(f"获取节点 {node_uuid[:8]}... 的相关边")
         
         try:
-            # 获取图谱所有边，然后过滤
+            # 
             all_edges = self.get_all_edges(graph_id)
             
             result = []
             for edge in all_edges:
-                # 检查边是否与指定节点相关（作为源或目标）
+                # 
                 if edge.source_node_uuid == node_uuid or edge.target_node_uuid == node_uuid:
                     result.append(edge)
             
@@ -798,7 +798,7 @@ class ZepToolsService:
         
         filtered = []
         for node in all_nodes:
-            # 检查labels是否包含指定类型
+            # labels
             if entity_type in node.labels:
                 filtered.append(node)
         
@@ -824,14 +824,14 @@ class ZepToolsService:
         """
         logger.info(f"获取实体 {entity_name} 的关系摘要...")
         
-        # 先搜索该实体相关的信息
+        # 
         search_result = self.search_graph(
             graph_id=graph_id,
             query=entity_name,
             limit=20
         )
         
-        # 尝试在所有节点中找到该实体
+        # 
         all_nodes = self.get_all_nodes(graph_id)
         entity_node = None
         for node in all_nodes:
@@ -841,7 +841,7 @@ class ZepToolsService:
         
         related_edges = []
         if entity_node:
-            # 传入graph_id参数
+            # graph_id
             related_edges = self.get_node_edges(graph_id, entity_node.uuid)
         
         return {
@@ -867,14 +867,14 @@ class ZepToolsService:
         nodes = self.get_all_nodes(graph_id)
         edges = self.get_all_edges(graph_id)
         
-        # 统计实体类型分布
+        # 
         entity_types = {}
         for node in nodes:
             for label in node.labels:
                 if label not in ["Entity", "Node"]:
                     entity_types[label] = entity_types.get(label, 0) + 1
         
-        # 统计关系类型分布
+        # 
         relation_types = {}
         for edge in edges:
             relation_types[edge.name] = relation_types.get(edge.name, 0) + 1
@@ -908,20 +908,20 @@ class ZepToolsService:
         """
         logger.info(f"获取模拟上下文: {simulation_requirement[:50]}...")
         
-        # 搜索与模拟需求相关的信息
+        # 
         search_result = self.search_graph(
             graph_id=graph_id,
             query=simulation_requirement,
             limit=limit
         )
         
-        # 获取图谱统计
+        # 
         stats = self.get_graph_statistics(graph_id)
         
-        # 获取所有实体节点
+        # 
         all_nodes = self.get_all_nodes(graph_id)
         
-        # 筛选有实际类型的实体（非纯Entity节点）
+        # Entity
         entities = []
         for node in all_nodes:
             custom_labels = [l for l in node.labels if l not in ["Entity", "Node"]]
@@ -936,11 +936,11 @@ class ZepToolsService:
             "simulation_requirement": simulation_requirement,
             "related_facts": search_result.facts,
             "graph_statistics": stats,
-            "entities": entities[:limit],  # 限制数量
+            "entities": entities[:limit],  # 
             "total_entities": len(entities)
         }
     
-    # ========== 核心检索工具（优化后） ==========
+    # ==========  ==========
     
     def insight_forge(
         self,
@@ -978,7 +978,7 @@ class ZepToolsService:
             sub_queries=[]
         )
         
-        # Step 1: 使用LLM生成子问题
+        # Step 1: LLM
         sub_queries = self._generate_sub_queries(
             query=query,
             simulation_requirement=simulation_requirement,
@@ -988,7 +988,7 @@ class ZepToolsService:
         result.sub_queries = sub_queries
         logger.info(f"生成 {len(sub_queries)} 个子问题")
         
-        # Step 2: 对每个子问题进行语义搜索
+        # Step 2: 
         all_facts = []
         all_edges = []
         seen_facts = set()
@@ -1008,7 +1008,7 @@ class ZepToolsService:
             
             all_edges.extend(search_result.edges)
         
-        # 对原始问题也进行搜索
+        # 
         main_search = self.search_graph(
             graph_id=graph_id,
             query=query,
@@ -1023,7 +1023,7 @@ class ZepToolsService:
         result.semantic_facts = all_facts
         result.total_facts = len(all_facts)
         
-        # Step 3: 从边中提取相关实体UUID，只获取这些实体的信息（不获取全部节点）
+        # Step 3: UUID
         entity_uuids = set()
         for edge_data in all_edges:
             if isinstance(edge_data, dict):
@@ -1034,21 +1034,21 @@ class ZepToolsService:
                 if target_uuid:
                     entity_uuids.add(target_uuid)
         
-        # 获取所有相关实体的详情（不限制数量，完整输出）
+        # 
         entity_insights = []
-        node_map = {}  # 用于后续关系链构建
+        node_map = {}  # 
         
-        for uuid in list(entity_uuids):  # 处理所有实体，不截断
+        for uuid in list(entity_uuids):  # 
             if not uuid:
                 continue
             try:
-                # 单独获取每个相关节点的信息
+                # 
                 node = self.get_node_detail(uuid)
                 if node:
                     node_map[uuid] = node
                     entity_type = next((l for l in node.labels if l not in ["Entity", "Node"]), "实体")
                     
-                    # 获取该实体相关的所有事实（不截断）
+                    # 
                     related_facts = [
                         f for f in all_facts 
                         if node.name.lower() in f.lower()
@@ -1059,7 +1059,7 @@ class ZepToolsService:
                         "name": node.name,
                         "type": entity_type,
                         "summary": node.summary,
-                        "related_facts": related_facts  # 完整输出，不截断
+                        "related_facts": related_facts  # 
                     })
             except Exception as e:
                 logger.debug(f"获取节点 {uuid} 失败: {e}")
@@ -1068,9 +1068,9 @@ class ZepToolsService:
         result.entity_insights = entity_insights
         result.total_entities = len(entity_insights)
         
-        # Step 4: 构建所有关系链（不限制数量）
+        # Step 4: 
         relationship_chains = []
-        for edge_data in all_edges:  # 处理所有边，不截断
+        for edge_data in all_edges:  # 
             if isinstance(edge_data, dict):
                 source_uuid = edge_data.get('source_node_uuid', '')
                 target_uuid = edge_data.get('target_node_uuid', '')
@@ -1129,12 +1129,12 @@ class ZepToolsService:
             )
             
             sub_queries = response.get("sub_queries", [])
-            # 确保是字符串列表
+            # 
             return [str(sq) for sq in sub_queries[:max_queries]]
             
         except Exception as e:
             logger.warning(f"生成子问题失败: {str(e)}，使用默认子问题")
-            # 降级：返回基于原问题的变体
+            # 
             return [
                 query,
                 f"{query} 的主要参与者",
@@ -1172,18 +1172,18 @@ class ZepToolsService:
         
         result = PanoramaResult(query=query)
         
-        # 获取所有节点
+        # 
         all_nodes = self.get_all_nodes(graph_id)
         node_map = {n.uuid: n for n in all_nodes}
         result.all_nodes = all_nodes
         result.total_nodes = len(all_nodes)
         
-        # 获取所有边（包含时间信息）
+        # 
         all_edges = self.get_all_edges(graph_id, include_temporal=True)
         result.all_edges = all_edges
         result.total_edges = len(all_edges)
         
-        # 分类事实
+        # 
         active_facts = []
         historical_facts = []
         
@@ -1191,24 +1191,24 @@ class ZepToolsService:
             if not edge.fact:
                 continue
             
-            # 为事实添加实体名称
+            # 
             source_name = node_map.get(edge.source_node_uuid, NodeInfo('', '', [], '', {})).name or edge.source_node_uuid[:8]
             target_name = node_map.get(edge.target_node_uuid, NodeInfo('', '', [], '', {})).name or edge.target_node_uuid[:8]
             
-            # 判断是否过期/失效
+            # /
             is_historical = edge.is_expired or edge.is_invalid
             
             if is_historical:
-                # 历史/过期事实，添加时间标记
+                # /
                 valid_at = edge.valid_at or "未知"
                 invalid_at = edge.invalid_at or edge.expired_at or "未知"
                 fact_with_time = f"[{valid_at} - {invalid_at}] {edge.fact}"
                 historical_facts.append(fact_with_time)
             else:
-                # 当前有效事实
+                # 
                 active_facts.append(edge.fact)
         
-        # 基于查询进行相关性排序
+        # 
         query_lower = query.lower()
         keywords = [w.strip() for w in query_lower.replace(',', ' ').replace('，', ' ').split() if len(w.strip()) > 1]
         
@@ -1222,7 +1222,7 @@ class ZepToolsService:
                     score += 10
             return score
         
-        # 排序并限制数量
+        # 
         active_facts.sort(key=relevance_score, reverse=True)
         historical_facts.sort(key=relevance_score, reverse=True)
         
@@ -1258,7 +1258,7 @@ class ZepToolsService:
         """
         logger.info(f"QuickSearch 简单搜索: {query[:50]}...")
         
-        # 直接调用现有的search_graph方法
+        # search_graph
         result = self.search_graph(
             graph_id=graph_id,
             query=query,
@@ -1313,7 +1313,7 @@ class ZepToolsService:
             interview_questions=custom_questions or []
         )
         
-        # Step 1: 读取人设文件
+        # Step 1: 
         profiles = self._load_agent_profiles(simulation_id)
         
         if not profiles:
@@ -1324,7 +1324,7 @@ class ZepToolsService:
         result.total_agents = len(profiles)
         logger.info(f"加载到 {len(profiles)} 个Agent人设")
         
-        # Step 2: 使用LLM选择要采访的Agent（返回agent_id列表）
+        # Step 2: LLMAgentagent_id
         selected_agents, selected_indices, selection_reasoning = self._select_agents_for_interview(
             profiles=profiles,
             interview_requirement=interview_requirement,
@@ -1336,7 +1336,7 @@ class ZepToolsService:
         result.selection_reasoning = selection_reasoning
         logger.info(f"选择了 {len(selected_agents)} 个Agent进行采访: {selected_indices}")
         
-        # Step 3: 生成采访问题（如果没有提供）
+        # Step 3: 
         if not result.interview_questions:
             result.interview_questions = self._generate_interview_questions(
                 interview_requirement=interview_requirement,
@@ -1345,10 +1345,10 @@ class ZepToolsService:
             )
             logger.info(f"生成了 {len(result.interview_questions)} 个采访问题")
         
-        # 将问题合并为一个采访prompt
+        # prompt
         combined_prompt = "\n".join([f"{i+1}. {q}" for i, q in enumerate(result.interview_questions)])
         
-        # 添加优化前缀，约束Agent回复格式
+        # Agent
         INTERVIEW_PROMPT_PREFIX = (
             "你正在接受一次采访。请结合你的人设、所有的过往记忆与行动，"
             "以纯文本方式直接回答以下问题。\n"
@@ -1362,38 +1362,38 @@ class ZepToolsService:
         )
         optimized_prompt = f"{INTERVIEW_PROMPT_PREFIX}{combined_prompt}"
         
-        # Step 4: 调用真实的采访API（不指定platform，默认双平台同时采访）
+        # Step 4: APIplatform
         try:
-            # 构建批量采访列表（不指定platform，双平台采访）
+            # platform
             interviews_request = []
             for agent_idx in selected_indices:
                 interviews_request.append({
                     "agent_id": agent_idx,
-                    "prompt": optimized_prompt  # 使用优化后的prompt
-                    # 不指定platform，API会在twitter和reddit两个平台都采访
+                    "prompt": optimized_prompt  # prompt
+                    # platformAPItwitterreddit
                 })
             
             logger.info(f"调用批量采访API（双平台）: {len(interviews_request)} 个Agent")
             
-            # 调用 SimulationRunner 的批量采访方法（不传platform，双平台采访）
+            #  SimulationRunner platform
             api_result = SimulationRunner.interview_agents_batch(
                 simulation_id=simulation_id,
                 interviews=interviews_request,
-                platform=None,  # 不指定platform，双平台采访
-                timeout=180.0   # 双平台需要更长超时
+                platform=None,  # platform
+                timeout=180.0   # 
             )
             
             logger.info(f"采访API返回: {api_result.get('interviews_count', 0)} 个结果, success={api_result.get('success')}")
             
-            # 检查API调用是否成功
+            # API
             if not api_result.get("success", False):
                 error_msg = api_result.get("error", "未知错误")
                 logger.warning(f"采访API返回失败: {error_msg}")
                 result.summary = f"采访API调用失败：{error_msg}。请检查OASIS模拟环境状态。"
                 return result
             
-            # Step 5: 解析API返回结果，构建AgentInterview对象
-            # 双平台模式返回格式: {"twitter_0": {...}, "reddit_0": {...}, "twitter_1": {...}, ...}
+            # Step 5: APIAgentInterview
+            # : {"twitter_0": {...}, "reddit_0": {...}, "twitter_1": {...}, ...}
             api_data = api_result.get("result", {})
             results_dict = api_data.get("results", {}) if isinstance(api_data, dict) else {}
             
@@ -1403,34 +1403,34 @@ class ZepToolsService:
                 agent_role = agent.get("profession", "未知")
                 agent_bio = agent.get("bio", "")
                 
-                # 获取该Agent在两个平台的采访结果
+                # Agent
                 twitter_result = results_dict.get(f"twitter_{agent_idx}", {})
                 reddit_result = results_dict.get(f"reddit_{agent_idx}", {})
                 
                 twitter_response = twitter_result.get("response", "")
                 reddit_response = reddit_result.get("response", "")
 
-                # 清理可能的工具调用 JSON 包裹
+                #  JSON 
                 twitter_response = self._clean_tool_call_response(twitter_response)
                 reddit_response = self._clean_tool_call_response(reddit_response)
 
-                # 始终输出双平台标记
+                # 
                 twitter_text = twitter_response if twitter_response else "（该平台未获得回复）"
                 reddit_text = reddit_response if reddit_response else "（该平台未获得回复）"
                 response_text = f"【Twitter平台回答】\n{twitter_text}\n\n【Reddit平台回答】\n{reddit_text}"
 
-                # 提取关键引言（从两个平台的回答中）
+                # 
                 import re
                 combined_responses = f"{twitter_response} {reddit_response}"
 
-                # 清理响应文本：去掉标记、编号、Markdown 等干扰
+                # Markdown 
                 clean_text = re.sub(r'#{1,6}\s+', '', combined_responses)
                 clean_text = re.sub(r'\{[^}]*tool_name[^}]*\}', '', clean_text)
                 clean_text = re.sub(r'[*_`|>~\-]{2,}', '', clean_text)
                 clean_text = re.sub(r'问题\d+[：:]\s*', '', clean_text)
                 clean_text = re.sub(r'【[^】]+】', '', clean_text)
 
-                # 策略1（主）: 提取完整的有实质内容的句子
+                # 1: 
                 sentences = re.split(r'[。！？]', clean_text)
                 meaningful = [
                     s.strip() for s in sentences
@@ -1441,7 +1441,7 @@ class ZepToolsService:
                 meaningful.sort(key=len, reverse=True)
                 key_quotes = [s + "。" for s in meaningful[:3]]
 
-                # 策略2（补充）: 正确配对的中文引号「」内长文本
+                # 2: 
                 if not key_quotes:
                     paired = re.findall(r'\u201c([^\u201c\u201d]{15,100})\u201d', clean_text)
                     paired += re.findall(r'\u300c([^\u300c\u300d]{15,100})\u300d', clean_text)
@@ -1450,7 +1450,7 @@ class ZepToolsService:
                 interview = AgentInterview(
                     agent_name=agent_name,
                     agent_role=agent_role,
-                    agent_bio=agent_bio[:1000],  # 扩大bio长度限制
+                    agent_bio=agent_bio[:1000],  # bio
                     question=combined_prompt,
                     response=response_text,
                     key_quotes=key_quotes[:5]
@@ -1460,7 +1460,7 @@ class ZepToolsService:
             result.interviewed_count = len(result.interviews)
             
         except ValueError as e:
-            # 模拟环境未运行
+            # 
             logger.warning(f"采访API调用失败（环境未运行？）: {e}")
             result.summary = f"采访失败：{str(e)}。模拟环境可能已关闭，请确保OASIS环境正在运行。"
             return result
@@ -1471,7 +1471,7 @@ class ZepToolsService:
             result.summary = f"采访过程发生错误：{str(e)}"
             return result
         
-        # Step 6: 生成采访摘要
+        # Step 6: 
         if result.interviews:
             result.summary = self._generate_interview_summary(
                 interviews=result.interviews,
@@ -1507,7 +1507,7 @@ class ZepToolsService:
         import os
         import csv
         
-        # 构建人设文件路径
+        # 
         sim_dir = os.path.join(
             os.path.dirname(__file__), 
             f'../../uploads/simulations/{simulation_id}'
@@ -1515,7 +1515,7 @@ class ZepToolsService:
         
         profiles = []
         
-        # 优先尝试读取Reddit JSON格式
+        # Reddit JSON
         reddit_profile_path = os.path.join(sim_dir, "reddit_profiles.json")
         if os.path.exists(reddit_profile_path):
             try:
@@ -1526,14 +1526,14 @@ class ZepToolsService:
             except Exception as e:
                 logger.warning(f"读取 reddit_profiles.json 失败: {e}")
         
-        # 尝试读取Twitter CSV格式
+        # Twitter CSV
         twitter_profile_path = os.path.join(sim_dir, "twitter_profiles.csv")
         if os.path.exists(twitter_profile_path):
             try:
                 with open(twitter_profile_path, 'r', encoding='utf-8') as f:
                     reader = csv.DictReader(f)
                     for row in reader:
-                        # CSV格式转换为统一格式
+                        # CSV
                         profiles.append({
                             "realname": row.get("name", ""),
                             "username": row.get("username", ""),
@@ -1565,7 +1565,7 @@ class ZepToolsService:
                 - reasoning: 选择理由
         """
         
-        # 构建Agent摘要列表
+        # Agent
         agent_summaries = []
         for i, profile in enumerate(profiles):
             summary = {
@@ -1614,7 +1614,7 @@ class ZepToolsService:
             selected_indices = response.get("selected_indices", [])[:max_agents]
             reasoning = response.get("reasoning", "基于相关性自动选择")
             
-            # 获取选中的Agent完整信息
+            # Agent
             selected_agents = []
             valid_indices = []
             for idx in selected_indices:
@@ -1626,7 +1626,7 @@ class ZepToolsService:
             
         except Exception as e:
             logger.warning(f"LLM选择Agent失败，使用默认选择: {e}")
-            # 降级：选择前N个
+            # N
             selected = profiles[:max_agents]
             indices = list(range(min(max_agents, len(profiles))))
             return selected, indices, "使用默认选择策略"
@@ -1690,7 +1690,7 @@ class ZepToolsService:
         if not interviews:
             return "未完成任何采访"
         
-        # 收集所有采访内容
+        # 
         interview_texts = []
         for interview in interviews:
             interview_texts.append(f"【{interview.agent_name}（{interview.agent_role}）】\n{interview.response[:500]}")
@@ -1731,5 +1731,5 @@ class ZepToolsService:
             
         except Exception as e:
             logger.warning(f"生成采访摘要失败: {e}")
-            # 降级：简单拼接
+            # 
             return f"共采访了{len(interviews)}位受访者，包括：" + "、".join([i.agent_name for i in interviews])

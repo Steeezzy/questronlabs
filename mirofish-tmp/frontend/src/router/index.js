@@ -41,6 +41,11 @@ const routes = [
     name: 'Interaction',
     component: InteractionView,
     props: true
+  },
+  {
+    path: '/workspace',
+    name: 'ITWorkspace',
+    component: () => import('../views/ITWorkspace.vue')
   }
 ]
 
